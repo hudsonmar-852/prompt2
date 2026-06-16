@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt2 — AI Prompt Studio</title>
+  <meta name="description" content="Prompt2 is a clean AI prompt landing page for image, video and automation prompt creation." />
+  <style>
+    :root {
+      --bg: #050507;
+      --panel: rgba(255,255,255,0.065);
+      --panel-strong: rgba(255,255,255,0.11);
+      --text: #f5f7fb;
+      --muted: #a8adbd;
+      --line: rgba(255,255,255,0.13);
+      --glow: rgba(120, 120, 255, 0.25);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(97, 84, 255, 0.25), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.11), transparent 24%),
+        radial-gradient(circle at 50% 90%, rgba(0, 190, 255, 0.12), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .16;
+      background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle at center, black, transparent 78%);
+    }
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.02em; }
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #fff, #7e86ff 45%, #111);
+      box-shadow: 0 0 36px var(--glow);
+    }
+    nav { display: flex; gap: 22px; color: var(--muted); font-size: 14px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 48px;
+      align-items: center;
+      min-height: 76vh;
+      padding: 48px 0 80px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.055);
+      color: #d8dcff;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 13px;
+      backdrop-filter: blur(18px);
+      margin-bottom: 24px;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 99px; background: #aeb5ff; box-shadow: 0 0 20px #aeb5ff; }
+    h1 {
+      margin: 0;
+      font-size: clamp(56px, 8vw, 112px);
+      line-height: .88;
+      letter-spacing: -0.085em;
+      font-weight: 800;
+    }
+    .gradient {
+      background: linear-gradient(180deg, #fff 0%, #cfd4ff 55%, #7780ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead {
+      max-width: 620px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.55;
+      letter-spacing: -0.02em;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 14px 20px;
+      border: 1px solid var(--line);
+      font-weight: 650;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn.primary { background: #fff; color: #050507; }
+    .btn.secondary { background: rgba(255,255,255,.055); color: var(--text); backdrop-filter: blur(18px); }
+    .orb-card {
+      position: relative;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 36px;
+      background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.035));
+      backdrop-filter: blur(28px);
+      overflow: hidden;
+      box-shadow: 0 30px 120px rgba(0,0,0,.45);
+    }
+    .orb {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      left: 50%;
+      top: 45%;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.95), rgba(185,190,255,.78) 15%, rgba(99,108,255,.42) 38%, rgba(12,12,20,.12) 66%, transparent 72%),
+        conic-gradient(from 210deg, #fff, #8f99ff, #111, #fff);
+      filter: saturate(1.15);
+      box-shadow: 0 0 90px rgba(143,153,255,.36), inset 0 0 80px rgba(255,255,255,.25);
+    }
+    .prompt-box {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(5,5,7,.55);
+      backdrop-filter: blur(24px);
+      padding: 20px;
+    }
+    .prompt-title { display: flex; justify-content: space-between; color: #fff; font-weight: 700; margin-bottom: 12px; }
+    .prompt-text { color: var(--muted); line-height: 1.6; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding-bottom: 70px; }
+    .feature { border: 1px solid var(--line); border-radius: 26px; background: var(--panel); padding: 24px; min-height: 180px; }
+    .feature h3 { margin: 0 0 12px; font-size: 18px; }
+    .feature p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 15px; }
+    .builder {
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background: var(--panel-strong);
+      padding: 34px;
+      margin-bottom: 80px;
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .builder h2 { margin: 0 0 12px; font-size: clamp(32px, 4vw, 52px); line-height: .98; letter-spacing: -0.055em; }
+    .builder p { color: var(--muted); line-height: 1.6; }
+    textarea {
+      width: 100%; min-height: 180px; resize: vertical; border: 1px solid var(--line); border-radius: 22px;
+      padding: 18px; background: rgba(0,0,0,.34); color: var(--text); outline: none; font: inherit; line-height: 1.5;
+    }
+    footer { color: var(--muted); border-top: 1px solid var(--line); padding: 26px 0 40px; font-size: 13px; }
+    @media (max-width: 860px) {
+      nav { display: none; }
+      .hero, .builder { grid-template-columns: 1fr; }
+      .orb-card { min-height: 420px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <main class="wrap">
+    <header>
+      <a class="brand" href="#"><span class="logo"></span><span>Prompt2</span></a>
+      <nav><a href="#studio">Studio</a><a href="#features">Features</a><a href="#builder">Builder</a></nav>
+    </header>
+    <section class="hero" id="studio">
+      <div>
+        <div class="badge"><span class="dot"></span> AI Prompt Studio for image, video and automation</div>
+        <h1><span class="gradient">Prompt</span><br />without limits.</h1>
+        <p class="lead">Create clean, powerful and reusable AI prompts for visual ideas, video scenes, landing pages, job applications and automation workflows.</p>
+        <div class="actions"><a class="btn primary" href="#builder">Start Building</a><a class="btn secondary" href="#features">View Templates</a></div>
+      </div>
+      <div class="orb-card" aria-label="AI prompt visual card">
+        <div class="orb"></div>
+        <div class="prompt-box">
+          <div class="prompt-title"><span>Prompt Engine</span><span>v2</span></div>
+          <div class="prompt-text">Role + Background + Need + Output. Turn rough ideas into structured prompts for Grok, ChatGPT, image models and video tools.</div>
+        </div>
+      </div>
+    </section>
+    <section class="grid" id="features">
+      <article class="feature"><h3>Image Prompt</h3><p>Generate realistic, brand-grade image prompts with identity lock, lighting control and scene consistency.</p></article>
+      <article class="feature"><h3>Video Prompt</h3><p>Build short-form video scene prompts with action, camera movement, character behaviour and ending frame logic.</p></article>
+      <article class="feature"><h3>Workflow Prompt</h3><p>Convert messy instructions into reusable automation prompts for job search, content batching and AI production.</p></article>
+    </section>
+    <section class="builder" id="builder">
+      <div><h2>Write once.<br />Reuse everywhere.</h2><p>Paste your rough idea, then convert it into a sharper prompt structure. This page is ready for future JavaScript automation, prompt saving and API integration.</p></div>
+      <div><textarea placeholder="Example: Create a 9:16 AI video prompt for today’s Hong Kong news topic, funny tone, fusion style, no negative prompt..."></textarea></div>
+    </section>
+    <footer>Prompt2 by Hudson Mar · Built for AI creation workflows · Inspired by modern AI product landing pages, not an official Grok/X site.</footer>
+  </main>
+</body>
+</html>
