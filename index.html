@@ -3,69 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prompt2 — AI Prompt Engineering Studio</title>
-  <meta name="description" content="Prompt2 turns rough ideas into structured AI prompts for image, video, writing, coding and automation workflows." />
-  <style>
-    :root{--bg:#050507;--panel:rgba(255,255,255,.07);--panel2:rgba(255,255,255,.12);--text:#f5f7fb;--muted:#a8adbd;--line:rgba(255,255,255,.14);--soft:rgba(126,134,255,.22);--ok:#b8ffd8;--warn:#ffe1a8}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% 10%,rgba(97,84,255,.28),transparent 30%),radial-gradient(circle at 90% 10%,rgba(255,255,255,.12),transparent 24%),radial-gradient(circle at 50% 95%,rgba(0,190,255,.12),transparent 32%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}.noise{position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(circle at center,black,transparent 78%)}.wrap{width:min(1180px,calc(100% - 36px));margin:0 auto;position:relative;z-index:1}header{display:flex;align-items:center;justify-content:space-between;padding:24px 0}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em}.logo{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#fff,#7e86ff 45%,#111);box-shadow:0 0 36px rgba(120,120,255,.3)}nav{display:flex;gap:20px;color:var(--muted);font-size:14px}.hero{display:grid;grid-template-columns:1fr .9fr;gap:40px;align-items:center;padding:40px 0 56px}.badge{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:rgba(255,255,255,.055);color:#d8dcff;border-radius:999px;padding:9px 14px;font-size:13px;backdrop-filter:blur(18px);margin-bottom:22px}.dot{width:7px;height:7px;border-radius:99px;background:#aeb5ff;box-shadow:0 0 20px #aeb5ff}h1{margin:0;font-size:clamp(48px,7vw,98px);line-height:.9;letter-spacing:-.08em;font-weight:850}.gradient{background:linear-gradient(180deg,#fff 0%,#cfd4ff 55%,#7780ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{max-width:650px;margin:24px 0 0;color:var(--muted);font-size:clamp(17px,2vw,21px);line-height:1.55;letter-spacing:-.02em}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}.btn{border:1px solid var(--line);border-radius:999px;padding:12px 17px;font-weight:720;background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;transition:.16s;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.1)}.btn.primary{background:#fff;color:#050507}.btn.small{padding:9px 12px;font-size:13px}.orb-card{position:relative;min-height:420px;border:1px solid var(--line);border-radius:34px;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.035));backdrop-filter:blur(28px);overflow:hidden;box-shadow:0 30px 120px rgba(0,0,0,.45)}.orb{position:absolute;width:310px;height:310px;border-radius:50%;left:50%;top:42%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),rgba(185,190,255,.78) 15%,rgba(99,108,255,.42) 38%,rgba(12,12,20,.12) 66%,transparent 72%),conic-gradient(from 210deg,#fff,#8f99ff,#111,#fff);box-shadow:0 0 90px rgba(143,153,255,.36),inset 0 0 80px rgba(255,255,255,.25)}.stat{position:absolute;border:1px solid var(--line);background:rgba(5,5,7,.58);backdrop-filter:blur(22px);border-radius:20px;padding:16px}.stat b{display:block;font-size:28px}.stat span{display:block;color:var(--muted);font-size:13px;margin-top:3px}.s1{left:24px;bottom:24px}.s2{right:24px;bottom:82px}.s3{right:56px;top:38px}.section-title{margin:10px 0 18px;font-size:32px;letter-spacing:-.05em}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:40px}.feature{border:1px solid var(--line);border-radius:24px;background:var(--panel);padding:20px;min-height:150px}.feature h3{margin:0 0 9px;font-size:16px}.feature p{margin:0;color:var(--muted);line-height:1.52;font-size:14px}.tool{display:grid;grid-template-columns:370px 1fr;gap:16px;margin:22px 0 80px}.panel{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.075);backdrop-filter:blur(22px);padding:20px}.panel h2,.panel h3{margin:0 0 12px;letter-spacing:-.035em}.field{margin-bottom:14px}.field label{display:block;color:#dfe3ff;font-size:13px;font-weight:720;margin-bottom:7px}select,input,textarea{width:100%;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.28);color:var(--text);padding:12px 13px;font:inherit;outline:none}textarea{min-height:120px;resize:vertical;line-height:1.5}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.output{white-space:pre-wrap;line-height:1.55;min-height:390px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:20px;padding:18px;color:#f8f9ff}.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0 0}.pill{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--muted);font-size:12px;margin:4px 4px 0 0}.score{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.score div{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(0,0,0,.18)}.score b{display:block;font-size:22px}.score span{color:var(--muted);font-size:12px}.history{display:grid;gap:10px;max-height:260px;overflow:auto}.history button{text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);border-radius:14px;padding:11px;cursor:pointer}.market{margin-bottom:50px}.table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:20px;overflow:hidden;display:block}.table tr{display:grid;grid-template-columns:1.1fr 1.3fr 1.3fr}.table th,.table td{padding:14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}.table th{background:rgba(255,255,255,.09)}.table td{color:var(--muted)}footer{color:var(--muted);border-top:1px solid var(--line);padding:24px 0 38px;font-size:13px}@media(max-width:920px){nav{display:none}.hero,.tool{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.table tr{grid-template-columns:1fr}.score{grid-template-columns:1fr 1fr}}@media(max-width:560px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.orb-card{min-height:360px}}
-  </style>
+  <title>Prompt2 — AI Prompt Studio</title>
+  <meta name="description" content="Prompt2 turns rough ideas into reusable AI prompts for image, video, writing, coding and automation workflows." />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="noise"></div>
   <main class="wrap">
-    <header><a class="brand" href="#"><span class="logo"></span><span>Prompt2</span></a><nav><a href="#features">Features</a><a href="#builder">Builder</a><a href="#market">Market Logic</a></nav></header>
-    <section class="hero">
-      <div><div class="badge"><span class="dot"></span> Functional AI Prompt Engineering Studio</div><h1><span class="gradient">Prompt</span><br>like a system.</h1><p class="lead">Turn rough ideas into reusable, structured prompts for ChatGPT, Grok, image models, video tools, coding agents and automation workflows.</p><div class="actions"><a class="btn primary" href="#builder">Open Builder</a><button class="btn" onclick="loadExample('video')">Try Video Prompt</button><button class="btn" onclick="loadExample('job')">Try Job Automation</button></div></div>
-      <div class="orb-card"><div class="orb"></div><div class="stat s1"><b>RBNO</b><span>Role · Background · Need · Output</span></div><div class="stat s2"><b>6</b><span>prompt types</span></div><div class="stat s3"><b>Local</b><span>save + export</span></div></div>
+    <header class="site-header">
+      <a class="brand" href="#top"><span class="logo"></span><span>Prompt2</span></a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#builder">Builder</a>
+        <a href="#templates">Templates</a>
+        <a href="#version">Version</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <div>
+        <div class="badge"><span class="dot"></span> Functional AI Prompt Studio</div>
+        <h1><span class="gradient">Prompt</span><br>with structure.</h1>
+        <p class="lead">Create clean, powerful and reusable AI prompts for visual ideas, video scenes, landing pages, job applications, GitHub tasks and automation workflows.</p>
+        <div class="actions">
+          <a class="btn primary" href="#builder">Start Building</a>
+          <a class="btn" href="#templates">View Templates</a>
+        </div>
+      </div>
+      <div class="orb-card" aria-label="Prompt2 feature summary">
+        <div class="orb"></div>
+        <div class="stat s1"><b>RBNO</b><span>Role · Background · Need · Output</span></div>
+        <div class="stat s2"><b>6</b><span>working prompt modes</span></div>
+        <div class="stat s3"><b>v3.0</b><span>functional MVP</span></div>
+      </div>
     </section>
 
-    <section id="features"><h2 class="section-title">Market-level features built in</h2><div class="grid">
-      <article class="feature"><h3>Structured generator</h3><p>Converts rough ideas into role, context, task, constraints and output format.</p></article>
-      <article class="feature"><h3>Prompt optimiser</h3><p>Adds clarity, control, examples, safety checks and measurable output rules.</p></article>
-      <article class="feature"><h3>Multi-use templates</h3><p>Image, video, writing, coding, business, job search and automation prompts.</p></article>
-      <article class="feature"><h3>History + export</h3><p>Save generated prompts locally, reload previous versions and export as text.</p></article>
-    </div></section>
+    <section id="features">
+      <h2 class="section-title">Features that work</h2>
+      <div class="grid feature-grid" id="featureGrid"></div>
+    </section>
 
     <section class="tool" id="builder">
       <aside class="panel">
         <h2>Prompt Builder</h2>
-        <div class="field"><label>Prompt type</label><select id="type"><option value="image">Image generation</option><option value="video">Video generation</option><option value="writing">Writing / content</option><option value="coding">Coding / GitHub</option><option value="job">Job search automation</option><option value="business">Business strategy</option></select></div>
-        <div class="row"><div class="field"><label>Tone</label><select id="tone"><option>Professional</option><option>Natural Cantonese</option><option>Luxury cinematic</option><option>Funny viral</option><option>Concise executive</option></select></div><div class="field"><label>Output format</label><select id="format"><option>Copy-ready prompt</option><option>Step-by-step workflow</option><option>JSON-style structure</option><option>Checklist</option><option>Creative brief</option></select></div></div>
-        <div class="field"><label>Target model / tool</label><input id="model" value="ChatGPT / Grok / image or video model" /></div>
-        <div class="field"><label>Your rough idea</label><textarea id="idea" placeholder="Paste rough idea here..."></textarea></div>
-        <div class="field"><label>Must include</label><input id="include" placeholder="identity lock, 9:16, Hong Kong context, no negative prompt..." /></div>
-        <div class="field"><label>Must avoid</label><input id="avoid" placeholder="generic wording, fake facts, extra people, watermark..." /></div>
-        <div class="toolbar"><button class="btn primary" onclick="generatePrompt()">Generate Prompt</button><button class="btn" onclick="improvePrompt()">Improve</button><button class="btn" onclick="clearAll()">Clear</button></div>
-        <div class="score"><div><b id="clarity">0</b><span>clarity</span></div><div><b id="control">0</b><span>control</span></div><div><b id="reuse">0</b><span>reuse</span></div><div><b id="risk">0</b><span>safety</span></div></div>
-        <h3>Saved prompts</h3><div id="history" class="history"></div>
+        <div class="field"><label for="type">Prompt type</label><select id="type"></select></div>
+        <div class="row">
+          <div class="field"><label for="tone">Tone</label><select id="tone"><option>Professional</option><option>Natural Hong Kong Traditional Chinese</option><option>Concise executive</option><option>Luxury cinematic</option><option>Funny viral</option></select></div>
+          <div class="field"><label for="format">Output format</label><select id="format"><option>Copy-ready prompt</option><option>Step-by-step workflow</option><option>Checklist</option><option>JSON-style structure</option><option>Creative brief</option></select></div>
+        </div>
+        <div class="field"><label for="model">Target model / tool</label><input id="model" value="ChatGPT / Grok / image or video model" /></div>
+        <div class="field"><label for="idea">Your rough idea</label><textarea id="idea" placeholder="Paste your rough idea here..."></textarea></div>
+        <div class="field"><label for="include">Must include</label><input id="include" placeholder="identity lock, Hong Kong context, 9:16, copy button, version control..." /></div>
+        <div class="field"><label for="avoid">Must avoid</label><input id="avoid" placeholder="generic wording, fake facts, broken layout, watermark, weak instruction..." /></div>
+        <div class="toolbar">
+          <button class="btn primary" id="generateBtn">Convert Prompt</button>
+          <button class="btn" id="improveBtn">Improve</button>
+          <button class="btn" id="clearBtn">Clear</button>
+        </div>
+        <div class="score">
+          <div><b id="clarity">0</b><span>clarity</span></div>
+          <div><b id="control">0</b><span>control</span></div>
+          <div><b id="reuse">0</b><span>reuse</span></div>
+          <div><b id="safety">0</b><span>safety</span></div>
+        </div>
+        <h3>Saved prompts</h3>
+        <div id="history" class="history"></div>
       </aside>
-      <section class="panel"><h2>Generated Output</h2><div class="output" id="output">Choose a type, paste your rough idea, then generate.</div><div class="toolbar"><button class="btn small" onclick="copyOutput()">Copy</button><button class="btn small" onclick="savePrompt()">Save</button><button class="btn small" onclick="downloadPrompt()">Export .txt</button><button class="btn small" onclick="copyAsMarkdown()">Copy Markdown</button></div><div id="tags" style="margin-top:12px"></div></section>
+
+      <section class="panel">
+        <h2>Generated Output</h2>
+        <div class="output" id="output">Choose a type, paste your rough idea, then convert.</div>
+        <div class="toolbar">
+          <button class="btn small" id="copyBtn">Copy</button>
+          <button class="btn small" id="saveBtn">Save</button>
+          <button class="btn small" id="exportBtn">Export .txt</button>
+          <button class="btn small" id="markdownBtn">Copy Markdown</button>
+        </div>
+        <div id="status" class="status"></div>
+        <div id="tags" class="tags"></div>
+      </section>
     </section>
 
-    <section class="market" id="market"><h2 class="section-title">Market study translated into Prompt2</h2><table class="table"><tr><th>Market feature</th><th>Why it matters</th><th>Prompt2 MVP implementation</th></tr><tr><td>Prompt management</td><td>Teams need reusable, versioned prompt assets.</td><td>Local prompt history, reload and export.</td></tr><tr><td>Prompt optimisation</td><td>Strong prompts need context, constraints and examples.</td><td>RBNO structure + quality scoring + Improve mode.</td></tr><tr><td>Multi-model workflow</td><td>Users move between ChatGPT, Grok, image/video tools and coding agents.</td><td>Target model field + model-neutral output.</td></tr><tr><td>Safety and QA</td><td>Prompt injection, vague claims and weak constraints reduce reliability.</td><td>Must avoid field + safety checklist in every prompt.</td></tr></table></section>
-    <footer>Prompt2 by Hudson Mar · Functional MVP · Inspired by modern AI prompt and agent tools, not an official Grok/X product.</footer>
+    <section id="templates" class="panel market">
+      <h2 class="section-title">Template Library</h2>
+      <p class="muted">Click any template to auto-fill the builder.</p>
+      <div class="grid template-grid" id="templateGrid"></div>
+    </section>
+
+    <section id="version" class="panel market">
+      <h2 class="section-title">Version Control</h2>
+      <div class="version-box">
+        <div><b>Prompt2 v3.0.0</b><span> Functional MVP</span></div>
+        <div>Last updated: 2026-06-17</div>
+        <div>Tasks: DONE — builder, templates, copy, save, export, history, mobile layout.</div>
+      </div>
+    </section>
+
+    <footer>Prompt2 by Hudson Mar · Built for AI creation workflows · Functional GitHub Pages MVP.</footer>
   </main>
-<script>
-const templates={
- image:{role:'You are a senior AI image prompt director.',rules:['Preserve subject identity and composition when reference images are provided.','Specify lighting, lens, mood, wardrobe, background and realism level.','Use positive constraints. Avoid relying on negative prompts unless the tool supports them.'],output:'Return one final image prompt, followed by optional production notes.'},
- video:{role:'You are a cinematic AI video prompt director.',rules:['Define subject, motion, camera, environment, duration and final frame.','Keep action physically realistic and easy for video models to follow.','Use clear sequence language: opening, movement, ending frame.'],output:'Return a copy-ready video generation prompt.'},
- writing:{role:'You are a senior editor and content strategist.',rules:['Clarify audience, objective, tone and structure.','Remove vague claims and make the output copy-ready.','Use concise, natural language.'],output:'Return the final draft plus optional improvement notes.'},
- coding:{role:'You are a senior full-stack engineer and GitHub automation assistant.',rules:['State the goal, files to change, constraints and acceptance tests.','Prefer simple maintainable code.','Include error handling and deployment notes.'],output:'Return an implementation prompt suitable for a coding agent.'},
- job:{role:'You are a Hong Kong job search automation strategist.',rules:['Match CV strengths to job requirements.','Prioritise relevant roles, keywords, cover letters and application tracking.','Avoid applying to poor-fit roles.'],output:'Return a practical job search automation workflow and prompt.'},
- business:{role:'You are a strategy consultant.',rules:['Define business objective, audience, value proposition, risks and next actions.','Use market-aware reasoning and measurable outputs.','Keep recommendations practical.'],output:'Return a structured strategy prompt.'}
-};
-function el(id){return document.getElementById(id)}
-function scoreText(text){const words=text.trim().split(/\s+/).filter(Boolean).length;el('clarity').textContent=Math.min(10,Math.round(words/18)+4);el('control').textContent=(text.includes('Must include')&&text.includes('Must avoid'))?9:7;el('reuse').textContent=text.includes('Output format')?9:8;el('risk').textContent=text.includes('Safety')?9:7}
-function generatePrompt(){const type=el('type').value,t=templates[type],idea=el('idea').value.trim()||'Describe the task clearly here.',inc=el('include').value.trim()||'clear context, strong structure, specific output rules',avoid=el('avoid').value.trim()||'vague wording, unsupported claims, unnecessary complexity',tone=el('tone').value,format=el('format').value,model=el('model').value.trim();const text=`${t.role}\n\nBackground:\n${idea}\n\nTarget model / tool:\n${model}\n\nNeed:\nTransform the rough idea into a high-quality AI prompt that is specific, controllable, reusable and easy to execute.\n\nTone:\n${tone}\n\nMust include:\n${inc}\n\nMust avoid:\n${avoid}\n\nPrompt engineering rules:\n- ${t.rules.join('\n- ')}\n- Break complex work into clear sections.\n- State assumptions explicitly when information is missing.\n- Keep the final output practical and copy-ready.\n\nSafety / quality check:\n- Do not invent facts, people, dates or source claims.\n- Avoid hidden instructions that conflict with the user objective.\n- Make constraints visible and testable.\n\nOutput format:\n${format}. ${t.output}\n\nFinal prompt:\n[Write the complete final prompt here.]`;el('output').textContent=text;el('tags').innerHTML=['RBNO','Reusable','Quality checked',type].map(x=>`<span class="pill">${x}</span>`).join('');scoreText(text)}
-function improvePrompt(){const current=el('output').textContent;if(!current||current.startsWith('Choose')){generatePrompt();return}el('output').textContent=current+`\n\nOptimisation layer:\n- Add one concrete example if the model may misunderstand the task.\n- Define success criteria before generation.\n- Ask the model to return only the required format.\n- For creative prompts, lock subject, environment, camera, style and final frame separately.\n- For automation prompts, include trigger, input, action, output and failure handling.`;scoreText(el('output').textContent)}
-function copyOutput(){navigator.clipboard.writeText(el('output').textContent)}
-function copyAsMarkdown(){navigator.clipboard.writeText('```\n'+el('output').textContent+'\n```')}
-function savePrompt(){const list=JSON.parse(localStorage.getItem('prompt2-history')||'[]');list.unshift({date:new Date().toLocaleString(),type:el('type').value,text:el('output').textContent});localStorage.setItem('prompt2-history',JSON.stringify(list.slice(0,20)));renderHistory()}
-function renderHistory(){const list=JSON.parse(localStorage.getItem('prompt2-history')||'[]');el('history').innerHTML=list.length?list.map((x,i)=>`<button onclick="loadHistory(${i})"><b>${x.type}</b><br><small>${x.date}</small></button>`).join(''):'<span class="pill">No saved prompts yet</span>'}
-function loadHistory(i){const list=JSON.parse(localStorage.getItem('prompt2-history')||'[]');el('output').textContent=list[i].text;scoreText(list[i].text)}
-function downloadPrompt(){const blob=new Blob([el('output').textContent],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='prompt2-output.txt';a.click();URL.revokeObjectURL(a.href)}
-function clearAll(){['idea','include','avoid'].forEach(id=>el(id).value='');el('output').textContent='Choose a type, paste your rough idea, then generate.';['clarity','control','reuse','risk'].forEach(id=>el(id).textContent='0');el('tags').innerHTML=''}
-function loadExample(kind){if(kind==='video'){el('type').value='video';el('tone').value='Funny viral';el('idea').value='Create a short funny AI video prompt based on today top news keyword fusion, Hong Kong style, fast visual hook, suitable for Grok video generation.';el('include').value='9:16, strong opening frame, funny twist, clear camera movement, no dialogue required';el('avoid').value='political misinformation, real-person defamation, copyrighted logos, messy motion';}if(kind==='job'){el('type').value='job';el('tone').value='Concise executive';el('idea').value='Build a job search automation prompt for matching my CV to Hong Kong digital transformation, IT project manager, business analyst and AI enablement roles.';el('include').value='ranking criteria, cover letter adaptation, JobsDB workflow, role-fit scoring';el('avoid').value='low-fit applications, generic cover letters, false claims';}generatePrompt()}
-renderHistory();
-</script>
+  <script src="data/templates.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
