@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prompt2 — AI Prompt Studio</title>
-  <meta name="description" content="Prompt2 turns rough ideas into reusable AI prompts for image, video, writing, coding and automation workflows." />
+  <title>Prompt2 — Prompt Master Intelligence v2</title>
+  <meta name="description" content="Prompt2 extracts reusable prompt phrases, classifies them into v2 catalogue groups, builds copy-ready prompts, and exports JSON records for GitHub and Google Sheets." />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -13,94 +13,92 @@
     <header class="site-header">
       <a class="brand" href="#top"><span class="logo"></span><span>Prompt2</span></a>
       <nav>
-        <a href="#features">Features</a>
-        <a href="#builder">Builder</a>
-        <a href="#templates">Templates</a>
-        <a href="#version">Version</a>
+        <a href="#studio">Studio</a>
+        <a href="#catalogue">Catalogue</a>
+        <a href="#records">Records</a>
+        <a href="#version">v2.0</a>
       </nav>
     </header>
 
     <section class="hero" id="top">
       <div>
-        <div class="badge"><span class="dot"></span> Functional AI Prompt Studio</div>
-        <h1><span class="gradient">Prompt</span><br>with structure.</h1>
-        <p class="lead">Create clean, powerful and reusable AI prompts for visual ideas, video scenes, landing pages, job applications, GitHub tasks and automation workflows.</p>
+        <div class="badge"><span class="dot"></span> Prompt Master Intelligence System v2.0</div>
+        <h1><span class="gradient">Prompt</span><br>Knowledge Base.</h1>
+        <p class="lead">Extract useful phrases, classify them into Image / Video / Character / Action / Environment / Workflow, add similar / opposite / works-with relationships, and export schema-ready JSON records.</p>
         <div class="actions">
-          <a class="btn primary" href="#builder">Start Building</a>
-          <a class="btn" href="#templates">View Templates</a>
+          <a class="btn primary" href="#studio">Start Analysing</a>
+          <a class="btn" href="#catalogue">View Catalogue Map</a>
         </div>
       </div>
-      <div class="orb-card" aria-label="Prompt2 feature summary">
+      <div class="orb-card" aria-label="Prompt2 v2 feature summary">
         <div class="orb"></div>
-        <div class="stat s1"><b>RBNO</b><span>Role · Background · Need · Output</span></div>
-        <div class="stat s2"><b>6</b><span>working prompt modes</span></div>
-        <div class="stat s3"><b>v3.0</b><span>functional MVP</span></div>
+        <div class="stat s1"><b>v2.0</b><span>Prompt Master schema</span></div>
+        <div class="stat s2"><b>15</b><span>master categories</span></div>
+        <div class="stat s3"><b>JSON</b><span>GitHub + Sheets ready</span></div>
       </div>
     </section>
 
-    <section id="features">
-      <h2 class="section-title">Features that work</h2>
-      <div class="grid feature-grid" id="featureGrid"></div>
-    </section>
-
-    <section class="tool" id="builder">
+    <section id="studio" class="tool">
       <aside class="panel">
-        <h2>Prompt Builder</h2>
-        <div class="field"><label for="type">Prompt type</label><select id="type"></select></div>
+        <h2>Phrase Intelligence Studio</h2>
+        <div class="field"><label for="title">Title / 標題</label><input id="title" placeholder="e.g. Warm bronze skin portrait system" /></div>
         <div class="row">
-          <div class="field"><label for="tone">Tone</label><select id="tone"><option>Professional</option><option>Natural Hong Kong Traditional Chinese</option><option>Concise executive</option><option>Luxury cinematic</option><option>Funny viral</option></select></div>
-          <div class="field"><label for="format">Output format</label><select id="format"><option>Copy-ready prompt</option><option>Step-by-step workflow</option><option>Checklist</option><option>JSON-style structure</option><option>Creative brief</option></select></div>
+          <div class="field"><label for="defaultCategory">Default Category</label><select id="defaultCategory"></select></div>
+          <div class="field"><label for="platform">Platform</label><select id="platform"><option>Auto</option><option>Grok Imagine</option><option>ChatGPT Image</option><option>Kling</option><option>Runway</option><option>CapCut</option><option>GitHub Prompt Builder</option></select></div>
         </div>
-        <div class="field"><label for="model">Target model / tool</label><input id="model" value="ChatGPT / Grok / image or video model" /></div>
-        <div class="field"><label for="idea">Your rough idea</label><textarea id="idea" placeholder="Paste your rough idea here..."></textarea></div>
-        <div class="field"><label for="include">Must include</label><input id="include" placeholder="identity lock, Hong Kong context, 9:16, copy button, version control..." /></div>
-        <div class="field"><label for="avoid">Must avoid</label><input id="avoid" placeholder="generic wording, fake facts, broken layout, watermark, weak instruction..." /></div>
+        <div class="row">
+          <div class="field"><label for="displayMode">Display</label><select id="displayMode"><option value="Both">English + Traditional Chinese</option><option value="Chinese">Traditional Chinese only</option><option value="English">English only</option></select></div>
+          <div class="field"><label for="detailMode">Detail</label><select id="detailMode"><option value="Full">Full Intelligence Card</option><option value="Compact">Compact</option></select></div>
+        </div>
+        <div class="field"><label for="promptInput">Prompt Content / 提示詞內容</label><textarea id="promptInput" placeholder="Paste prompt lines here. One useful phrase per line works best."></textarea></div>
         <div class="toolbar">
-          <button class="btn primary" id="generateBtn">Convert Prompt</button>
-          <button class="btn" id="improveBtn">Improve</button>
+          <button class="btn primary" id="analyseBtn">Analyse Now</button>
+          <button class="btn" id="buildBtn">Build Final Prompt</button>
           <button class="btn" id="clearBtn">Clear</button>
         </div>
-        <div class="score">
-          <div><b id="clarity">0</b><span>clarity</span></div>
-          <div><b id="control">0</b><span>control</span></div>
-          <div><b id="reuse">0</b><span>reuse</span></div>
-          <div><b id="safety">0</b><span>safety</span></div>
-        </div>
-        <h3>Saved prompts</h3>
+        <h3>Saved Records</h3>
         <div id="history" class="history"></div>
       </aside>
 
       <section class="panel">
-        <h2>Generated Output</h2>
-        <div class="output" id="output">Choose a type, paste your rough idea, then convert.</div>
+        <h2>Phrase Intelligence Analysis</h2>
+        <div class="toolbar compact" id="filters"></div>
+        <div id="analysis" class="analysis empty">Paste prompt content and click Analyse Now.</div>
         <div class="toolbar">
-          <button class="btn small" id="copyBtn">Copy</button>
-          <button class="btn small" id="saveBtn">Save</button>
-          <button class="btn small" id="exportBtn">Export .txt</button>
-          <button class="btn small" id="markdownBtn">Copy Markdown</button>
+          <button class="btn small" id="copyAnalysisBtn">Copy Analysis</button>
+          <button class="btn small" id="saveBtn">Submit to Records</button>
+          <button class="btn small" id="exportJsonBtn">Export JSON</button>
+          <button class="btn small" id="copyJsonBtn">Copy JSON</button>
         </div>
         <div id="status" class="status"></div>
-        <div id="tags" class="tags"></div>
       </section>
     </section>
 
-    <section id="templates" class="panel market">
-      <h2 class="section-title">Template Library</h2>
-      <p class="muted">Click any template to auto-fill the builder.</p>
-      <div class="grid template-grid" id="templateGrid"></div>
+    <section id="catalogue" class="panel market">
+      <h2 class="section-title">Practical Catalogue Map</h2>
+      <p class="muted">v2.0 structure follows the uploaded Prompt Master guideline: reusable phrase blocks, strict category/subcategory mapping, platform compatibility, qualityScore and JSON-ready fields.</p>
+      <div class="grid catalogue-grid" id="catalogueGrid"></div>
+    </section>
+
+    <section id="records" class="panel market">
+      <h2 class="section-title">Local JSON Records</h2>
+      <p class="muted">Records are stored in this browser. Export JSON and keep it in GitHub under <code>/data/prompt-records.json</code> or Google Drive / PROMPT / Database / Exports v2.</p>
+      <div class="toolbar"><button class="btn small" id="copyAllBtn">Copy All Records</button><button class="btn small" id="resetBtn">Reset Local Records</button></div>
+      <pre class="output small-output" id="recordsOutput">[]</pre>
     </section>
 
     <section id="version" class="panel market">
       <h2 class="section-title">Version Control</h2>
       <div class="version-box">
-        <div><b>Prompt2 v3.0.0</b><span> Functional MVP</span></div>
-        <div>Last updated: 2026-06-17</div>
-        <div>Tasks: DONE — builder, templates, copy, save, export, history, mobile layout.</div>
+        <div><b>Prompt2 v2.0.0</b><span> Prompt Master Intelligence upgrade</span></div>
+        <div>Last updated: 2026-06-22</div>
+        <div>Connected design: Google Drive PROMPT folder + Prompt Database v2 schema + GitHub JSON export.</div>
       </div>
     </section>
 
-    <footer>Prompt2 by Hudson Mar · Built for AI creation workflows · Functional GitHub Pages MVP.</footer>
+    <footer>Prompt2 by Hudson Mar · Prompt Master Intelligence System v2.0 · Static GitHub Pages + localStorage + JSON export.</footer>
   </main>
+  <script src="data/schema-v2.js"></script>
   <script src="data/templates.js"></script>
   <script src="js/app.js"></script>
 </body>
