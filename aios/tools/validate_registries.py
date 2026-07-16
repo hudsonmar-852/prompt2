@@ -16,18 +16,13 @@ import yaml
 REGISTRY_DIR = Path("aios/registries")
 REPORT_PATH = Path("aios/reports/registry-validation-latest.json")
 REQUIRED_OBJECT_FIELDS = {
-    "id",
-    "type",
-    "name",
-    "version",
-    "status",
-    "owner",
-    "location",
-    "created_at",
-    "updated_at",
+    "id", "type", "name", "version", "status", "owner",
+    "location", "created_at", "updated_at",
 }
 ID_KEYS = {"id", "template_id", "pattern_id", "skill_id", "workflow_id", "object_id"}
-DEPENDENCY_KEYS = {"dependencies", "skills", "uses", "requires", "referenced_skills"}
+DEPENDENCY_KEYS = {
+    "dependencies", "skills", "uses", "requires", "referenced_skills", "uses_skills"
+}
 
 
 def load_yaml(path: Path) -> Any:
@@ -46,6 +41,11 @@ def walk(node: Any):
 
 
 def collect_ids(documents: dict[Path, Any]) -> tuple[list[str], dict[str, Path]]:
+    """Collect all declared IDs for dependency resolution.
+
+    Registry IDs may intentionally reappear in the object registry as references,
+    so global repetition is not treated as an error.
+    """
     ids: list[str] = []
     locations: dict[str, Path] = {}
     for path, document in documents.items():
@@ -57,6 +57,26 @@ def collect_ids(documents: dict[Path, Any]) -> tuple[list[str], dict[str, Path]]
                     ids.append(value)
                     locations.setdefault(value, path)
     return ids, locations
+
+
+def validate_local_duplicate_ids(documents: dict[Path, Any]) -> list[dict[str, str]]:
+    """Reject duplicate object IDs inside the same registry object list."""
+    errors: list[dict[str, str]] = []
+    for path, document in documents.items():
+        if not isinstance(document, dict):
+            continue
+        objects = document.get("objects")
+        if not isinstance(objects, list):
+            continue
+        object_ids = [obj.get("id") for obj in objects if isinstance(obj, dict) and isinstance(obj.get("id"), str)]
+        for identifier, count in Counter(object_ids).items():
+            if count > 1:
+                errors.append({
+                    "code": "DUPLICATE_ID",
+                    "path": str(path),
+                    "message": f"Duplicate identifier inside registry: {identifier}",
+                })
+    return errors
 
 
 def collect_dependencies(documents: dict[Path, Any]) -> list[tuple[str, Path]]:
@@ -85,7 +105,11 @@ def validate_object_registry(document: Any, path: Path) -> list[dict[str, str]]:
             continue
         missing = sorted(REQUIRED_OBJECT_FIELDS - set(obj))
         if missing:
-            errors.append({"code": "MISSING_FIELDS", "path": str(path), "message": f"{obj.get('id', index)} missing: {', '.join(missing)}"})
+            errors.append({
+                "code": "MISSING_FIELDS",
+                "path": str(path),
+                "message": f"{obj.get('id', index)} missing: {', '.join(missing)}",
+            })
     return errors
 
 
@@ -97,9 +121,12 @@ def validate_source_paths(documents: dict[Path, Any], repo_root: Path) -> list[d
                 value = item.get(key)
                 if not isinstance(value, str) or not value or value.startswith(("http://", "https://")):
                     continue
-                target = repo_root / value
-                if not target.exists():
-                    warnings.append({"code": "MISSING_SOURCE_PATH", "path": str(path), "message": f"{key} does not exist: {value}"})
+                if not (repo_root / value).exists():
+                    warnings.append({
+                        "code": "MISSING_SOURCE_PATH",
+                        "path": str(path),
+                        "message": f"{key} does not exist: {value}",
+                    })
     return warnings
 
 
@@ -124,20 +151,22 @@ def validate(repo_root: Path) -> dict[str, Any]:
     if object_path in documents:
         errors.extend(validate_object_registry(documents[object_path], object_path))
 
-    identifiers, id_locations = collect_ids(documents)
-    duplicates = sorted(identifier for identifier, count in Counter(identifiers).items() if count > 1)
-    for identifier in duplicates:
-        errors.append({"code": "DUPLICATE_ID", "path": str(id_locations[identifier]), "message": f"Duplicate identifier: {identifier}"})
-
+    errors.extend(validate_local_duplicate_ids(documents))
+    identifiers, _ = collect_ids(documents)
     known_ids = set(identifiers)
+
     for dependency, path in collect_dependencies(documents):
         if dependency and dependency not in known_ids:
-            warnings.append({"code": "UNRESOLVED_DEPENDENCY", "path": str(path), "message": f"Dependency not registered: {dependency}"})
+            warnings.append({
+                "code": "UNRESOLVED_DEPENDENCY",
+                "path": str(path),
+                "message": f"Dependency not registered: {dependency}",
+            })
 
     warnings.extend(validate_source_paths(documents, repo_root))
 
     return {
-        "validator_version": "1.0.0",
+        "validator_version": "1.0.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "pass" if not errors else "fail",
         "summary": {
