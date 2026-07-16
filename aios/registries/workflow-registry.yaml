@@ -1,0 +1,95 @@
+schema_version: "1.0"
+registry:
+  id: REG-WORKFLOW-001
+  name: AIOS Workflow Registry
+  version: "1.0.0"
+  updated_at: "2026-07-16"
+
+workflow_schema:
+  required: [id, name, version, status, trigger, inputs, steps, skills, outputs, safety_gate, rollback]
+
+workflows:
+  - id: WF-001
+    name: AIOS Standard Delivery Workflow
+    version: "1.0.0"
+    status: active
+    trigger: User requests a substantial deliverable or approved implementation.
+    inputs: [request, available_context, constraints, target_destination]
+    skills: [SK-001, SK-003, SK-004, SK-005]
+    steps:
+      - understand_requirement
+      - retrieve_context
+      - research_when_required
+      - structure_solution
+      - create_draft
+      - run_quality_review
+      - obtain_or_apply_required_approval
+      - deliver_output
+      - archive_with_provenance
+      - update_registry
+    outputs: [approved_deliverable, provenance_record, registry_update]
+    safety_gate:
+      source_check: required_when_factual
+      permission_check: required_before_external_write
+      validation: required
+      human_approval: required_for_high_impact
+      rollback_plan: required_for_system_change
+    rollback:
+      method: restore_previous_version
+      evidence: commit_history_or_archived_version
+    success_metrics:
+      - first_pass_acceptance
+      - rework_rate
+      - time_saved
+      - reuse_count
+      - failure_cost
+
+  - id: WF-002
+    name: Prompt Pattern Registration
+    version: "1.0.0"
+    status: active
+    trigger: A reusable prompt is created or materially improved.
+    inputs: [purpose, raw_prompt, constraints, examples]
+    skills: [SK-002, SK-004, SK-005]
+    steps:
+      - define_purpose
+      - define_input_schema
+      - define_output_schema
+      - document_restrictions
+      - add_success_tests
+      - add_failure_cases
+      - assign_version_and_id
+      - archive_and_register
+    outputs: [prompt_pattern_card, registry_entry]
+    safety_gate:
+      source_check: conditional
+      permission_check: not_required_for_local_draft
+      validation: required
+      human_approval: required_before_production
+      rollback_plan: previous_prompt_version
+    rollback:
+      method: reactivate_previous_version
+
+  - id: WF-003
+    name: GitHub Controlled Update
+    version: "1.0.0"
+    status: active
+    trigger: User approves a repository change.
+    inputs: [repository, target_path, proposed_change]
+    skills: [SK-003, SK-004]
+    steps:
+      - inspect_existing_structure
+      - verify_target_and_permissions
+      - avoid_breaking_existing_runtime
+      - write_in_small_batches
+      - verify_commit_result
+      - document_change
+    outputs: [commit_reference, change_summary]
+    safety_gate:
+      source_check: repository_state
+      permission_check: required
+      validation: required
+      human_approval: inherited_from_user_go_command
+      rollback_plan: git_revert_or_restore_previous_blob
+    rollback:
+      method: git_revert_or_file_restore
