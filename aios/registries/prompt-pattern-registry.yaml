@@ -1,0 +1,140 @@
+registry:
+  id: REG-PROMPT-001
+  name: AIOS Prompt Pattern Registry
+  version: 1.0.0
+  status: active
+  owner: Hudson Mar
+  updated: 2026-07-16
+
+schema:
+  required:
+    - id
+    - name
+    - purpose
+    - input_schema
+    - output_schema
+    - restrictions
+    - validation
+    - version
+    - status
+    - provenance
+
+patterns:
+  - id: PPT-001
+    name: Reusable Phrase Extraction Pattern
+    purpose: Convert unstructured prompt text into granular reusable knowledge records.
+    template_ref: TPL-001
+    input_schema:
+      required: [raw_prompt]
+      optional: [source_type, target_platform, context]
+    output_schema:
+      type: list
+      record_fields: [usefulPhrase, category, subcategory, tags, qualityScore, similar, opposite, worksWith]
+    restrictions:
+      - Do not combine unrelated ideas into one record
+      - Do not invent source meaning
+      - Mark uncertain classification for review
+    validation:
+      - Every record contains one reusable phrase
+      - qualityScore is present
+      - category and subcategory are present
+    version: 1.0.0
+    status: production
+    provenance:
+      source: data/templates.js
+      migrated_on: 2026-07-16
+
+  - id: PPT-002
+    name: Identity-Locked Image Pattern
+    purpose: Generate a structured image prompt while preserving stable identity attributes.
+    template_ref: TPL-002
+    input_schema:
+      required: [identity_anchor, scene_goal]
+      optional: [skin, lighting, lens, ratio, environment, quality]
+    output_schema:
+      type: text
+      sections: [identity, subject, skin, lighting, camera, composition, environment, quality]
+    restrictions:
+      - Separate permanent identity from temporary scene attributes
+      - Do not claim exact identity preservation without a valid reference
+      - Avoid contradictory visual instructions
+    validation:
+      - Identity anchor appears first
+      - Lens or camera direction is defined
+      - Scene and quality requirements are explicit
+    version: 1.0.0
+    status: production
+    provenance:
+      source: data/templates.js
+      migrated_on: 2026-07-16
+
+  - id: PPT-003
+    name: Controlled Short Video Pattern
+    purpose: Generate a short-form video prompt with clear temporal and camera continuity.
+    template_ref: TPL-003
+    input_schema:
+      required: [opening_frame, action, duration]
+      optional: [camera_motion, ending_frame, aspect_ratio, continuity_anchor]
+    output_schema:
+      type: text
+      sections: [opening, action_flow, camera, timing, ending]
+    restrictions:
+      - Do not exceed requested duration
+      - Avoid impossible simultaneous camera actions
+      - Preserve subject and scene continuity
+    validation:
+      - Opening and ending frames are defined
+      - Action fits duration
+      - Camera movement is unambiguous
+    version: 1.0.0
+    status: production
+    provenance:
+      source: data/templates.js
+      migrated_on: 2026-07-16
+
+  - id: PPT-004
+    name: Positive-Only Generation Pattern
+    purpose: Translate visual requirements into positive-only instructions for generators that perform better without negative prompts.
+    template_ref: TPL-005
+    input_schema:
+      required: [desired_result]
+      optional: [composition, texture, lighting, focus, quality]
+    output_schema:
+      type: text
+      sections: [subject, visible_attributes, composition, lighting, detail, quality]
+    restrictions:
+      - No negative prompt block
+      - Express exclusions as desired visible outcomes
+      - Avoid vague quality filler
+    validation:
+      - Prompt contains only desired visible outcomes
+      - Main subject and composition are explicit
+    version: 1.0.0
+    status: production
+    provenance:
+      source: data/templates.js
+      migrated_on: 2026-07-16
+
+  - id: PPT-005
+    name: Automation Workflow Definition Pattern
+    purpose: Convert a rough process into an executable and auditable workflow definition.
+    template_ref: TPL-006
+    input_schema:
+      required: [goal, input, output]
+      optional: [systems, trigger, approvals, archive_target, rollback]
+    output_schema:
+      type: object
+      fields: [trigger, inputs, steps, validation, approval, outputs, archive, rollback, logs]
+    restrictions:
+      - No irreversible action without approval or rollback
+      - Do not assume unavailable connectors or permissions
+      - Keep source and output provenance
+    validation:
+      - Input and output are explicit
+      - Safety gate is included
+      - Archive and rollback paths are defined
+    version: 1.0.0
+    status: production
+    provenance:
+      source: data/templates.js
+      migrated_on: 2026-07-16
