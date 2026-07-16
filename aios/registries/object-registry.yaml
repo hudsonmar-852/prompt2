@@ -2,7 +2,7 @@ schema_version: "1.0"
 registry:
   id: REG-OBJECT-001
   name: AIOS Object Registry
-  version: "1.0.0"
+  version: "1.1.0"
   updated_at: "2026-07-16"
 
 object_schema:
@@ -57,7 +57,7 @@ objects:
   - id: PRJ-AIOS-FOUNDATION
     type: project
     name: AIOS Foundation
-    version: "1.1.0"
+    version: "1.2.0"
     status: active
     owner: Hudson Mar
     description: Core architecture for reusable knowledge, workflows, skills, automation and agents.
@@ -76,13 +76,13 @@ objects:
   - id: SYS-AIOS-MANIFEST
     type: document
     name: AIOS Manifest
-    version: "1.0.0"
+    version: "1.1.0"
     status: active
     owner: Hudson Mar
     tags: [kernel, manifest]
     dependencies: [PRJ-AIOS-FOUNDATION]
     location: aios/core/aios-manifest.yaml
-    source: AIOS Foundation Sprint 1
+    source: AIOS Foundation Sprint 2
     source_date: "2026-07-16"
     confidence: high
     sensitivity: internal
@@ -94,13 +94,68 @@ objects:
   - id: REG-OBJECT-001
     type: document
     name: AIOS Object Registry
-    version: "1.0.0"
+    version: "1.1.0"
     status: active
     owner: Hudson Mar
     tags: [kernel, registry, objects]
     dependencies: [SYS-AIOS-MANIFEST]
     location: aios/registries/object-registry.yaml
-    source: AIOS Foundation Sprint 1
+    source: AIOS Foundation Sprint 2
+    source_date: "2026-07-16"
+    confidence: high
+    sensitivity: internal
+    retention: permanent
+    review_status: approved
+    created_at: "2026-07-16"
+    updated_at: "2026-07-16"
+
+  - id: REG-TEMPLATE-001
+    type: document
+    name: AIOS Template Registry
+    version: "1.0.0"
+    status: active
+    owner: Hudson Mar
+    tags: [knowledge, registry, templates, migration]
+    dependencies: [REG-OBJECT-001, REG-SKILL-001]
+    location: aios/registries/template-registry.yaml
+    source: data/templates.js
+    source_date: "2026-07-16"
+    confidence: high
+    sensitivity: internal
+    retention: permanent
+    review_status: approved
+    rollback_location: data/templates.js
+    created_at: "2026-07-16"
+    updated_at: "2026-07-16"
+
+  - id: REG-PROMPT-001
+    type: document
+    name: AIOS Prompt Pattern Registry
+    version: "1.0.0"
+    status: active
+    owner: Hudson Mar
+    tags: [knowledge, registry, prompts, patterns]
+    dependencies: [REG-TEMPLATE-001, REG-SKILL-001]
+    location: aios/registries/prompt-pattern-registry.yaml
+    source: data/templates.js and AIOS pattern architecture
+    source_date: "2026-07-16"
+    confidence: high
+    sensitivity: internal
+    retention: permanent
+    review_status: approved
+    created_at: "2026-07-16"
+    updated_at: "2026-07-16"
+
+  - id: MIG-AIOS-S2-001
+    type: document
+    name: Sprint 2 Knowledge Migration Log
+    version: "1.0.0"
+    status: active
+    owner: Hudson Mar
+    tags: [migration, audit, provenance, sprint-2]
+    dependencies: [REG-TEMPLATE-001, REG-PROMPT-001]
+    location: aios/migrations/sprint-2-knowledge-migration.yaml
+    source: AIOS Sprint 2 migration execution
     source_date: "2026-07-16"
     confidence: high
     sensitivity: internal
