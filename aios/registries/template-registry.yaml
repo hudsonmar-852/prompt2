@@ -1,0 +1,144 @@
+registry:
+  id: REG-TEMPLATE-001
+  name: AIOS Template Registry
+  version: 1.0.0
+  status: active
+  owner: Hudson Mar
+  updated: 2026-07-16
+  source: data/templates.js
+
+schema:
+  required:
+    - id
+    - key
+    - name
+    - purpose
+    - version
+    - status
+    - source_path
+    - input
+    - output
+    - rules
+    - tags
+    - provenance
+
+objects:
+  - id: TPL-001
+    key: extractor
+    name: Prompt Extractor
+    purpose: Extract reusable phrases from raw prompts and classify them into the AIOS prompt schema.
+    version: 1.0.0
+    status: production
+    source_path: data/templates.js
+    input: Raw image, video, workflow or marketing prompt
+    output: Separate reusable phrase records with classification metadata
+    rules:
+      - One reusable phrase per row
+      - Assign category and subcategory
+      - Add tags, qualityScore, similar, opposite and worksWith
+    tags: [extraction, classification, prompt-engineering, reusable-knowledge]
+    uses_skills: [SK-002, SK-004, SK-005]
+    provenance:
+      migrated_from: window.PROMPT2_TEMPLATES.extractor
+      migrated_on: 2026-07-16
+      human_review: required-on-change
+
+  - id: TPL-002
+    key: image
+    name: Image Prompt Template
+    purpose: Build photorealistic image prompts with identity, skin, lighting, lens and composition control.
+    version: 1.0.0
+    status: production
+    source_path: data/templates.js
+    input: Subject identity, visual goal and scene requirements
+    output: Structured photorealistic image prompt
+    rules:
+      - Start with identity anchor
+      - Define skin texture and lighting
+      - Include lens, ratio, environment and quality
+    tags: [image, photorealistic, identity-lock, composition]
+    uses_skills: [SK-002, SK-004]
+    provenance:
+      migrated_from: window.PROMPT2_TEMPLATES.image
+      migrated_on: 2026-07-16
+      human_review: required-on-change
+
+  - id: TPL-003
+    key: video
+    name: Video Prompt Template
+    purpose: Build short video scene prompts with action, camera movement, timing and ending-frame control.
+    version: 1.0.0
+    status: production
+    source_path: data/templates.js
+    input: Opening frame, action, duration and visual direction
+    output: Structured short-video generation prompt
+    rules:
+      - Define start, movement and ending
+      - Keep scene continuity
+      - Specify camera motion and timing
+    tags: [video, camera-motion, continuity, short-form]
+    uses_skills: [SK-002, SK-003, SK-004]
+    provenance:
+      migrated_from: window.PROMPT2_TEMPLATES.video
+      migrated_on: 2026-07-16
+      human_review: required-on-change
+
+  - id: TPL-004
+    key: character
+    name: Character and Face Lock Template
+    purpose: Maintain identity consistency across recurring AI character generations.
+    version: 1.0.0
+    status: production
+    source_path: data/templates.js
+    input: Character reference and allowed scene changes
+    output: Identity-consistent character prompt
+    rules:
+      - Identity lock first
+      - Separate face identity from outfit and scene
+      - Protect age, facial geometry and body proportions
+    tags: [character, face-lock, identity-consistency, recurring-character]
+    uses_skills: [SK-002, SK-004]
+    provenance:
+      migrated_from: window.PROMPT2_TEMPLATES.character
+      migrated_on: 2026-07-16
+      human_review: required-on-change
+
+  - id: TPL-005
+    key: grok
+    name: Grok Positive Prompt
+    purpose: Produce positive-only prompts suitable for Grok Imagine.
+    version: 1.0.0
+    status: production
+    source_path: data/templates.js
+    input: Desired visible result and scene constraints
+    output: Positive-only Grok Imagine prompt
+    rules:
+      - Positive constraints only
+      - No negative prompt section
+      - Describe visible desired outcome
+    tags: [grok, positive-prompt, image-generation]
+    uses_skills: [SK-002, SK-004]
+    provenance:
+      migrated_from: window.PROMPT2_TEMPLATES.grok
+      migrated_on: 2026-07-16
+      human_review: required-on-change
+
+  - id: TPL-006
+    key: workflow
+    name: Workflow and Automation Prompt
+    purpose: Convert rough process ideas into reusable automation logic and archival records.
+    version: 1.0.0
+    status: production
+    source_path: data/templates.js
+    input: Rough process, expected output and target systems
+    output: Validated workflow definition with export and archive logic
+    rules:
+      - Define input and output
+      - Include validation steps
+      - Include export and archive logic
+    tags: [workflow, automation, validation, archive]
+    uses_skills: [SK-003, SK-004, SK-005]
+    provenance:
+      migrated_from: window.PROMPT2_TEMPLATES.workflow
+      migrated_on: 2026-07-16
+      human_review: required-on-change
