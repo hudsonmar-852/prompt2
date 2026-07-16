@@ -2,8 +2,8 @@ schema_version: "1.0"
 aios:
   id: AIOS-CORE
   name: Hudson AI Operating System
-  version: "1.1.0"
-  release: Foundation Sprint 1
+  version: "1.2.0"
+  release: Foundation Sprint 2 Knowledge Layer
   owner: Hudson Mar
   status: active
   updated_at: "2026-07-16"
@@ -30,11 +30,13 @@ layers:
     status: active
     components:
       - prompts
+      - prompt_patterns
       - workflows
       - skills
       - templates
       - sop
       - research
+      - migration_log
   automation:
     status: partial
     connectors:
@@ -59,6 +61,19 @@ registries:
   objects: aios/registries/object-registry.yaml
   skills: aios/registries/skill-registry.yaml
   workflows: aios/registries/workflow-registry.yaml
+  templates: aios/registries/template-registry.yaml
+  prompt_patterns: aios/registries/prompt-pattern-registry.yaml
+
+migrations:
+  sprint_2_knowledge: aios/migrations/sprint-2-knowledge-migration.yaml
+
+migration_status:
+  source_file: data/templates.js
+  templates_discovered: 6
+  templates_registered: 6
+  prompt_patterns_registered: 5
+  runtime_files_modified: false
+  phase: completed_phase_1
 
 safety_gate:
   source_required: true
@@ -84,9 +99,18 @@ deployment:
   compatibility_rule: "AIOS core files must not break the existing Prompt2 web application."
 
 roadmap:
-  current_sprint: sprint_1_core
+  current_sprint: sprint_2_knowledge_layer
+  completed:
+    - create_core_manifest
+    - create_object_registry
+    - create_skill_registry
+    - create_workflow_registry
+    - migrate_templates
+    - create_prompt_pattern_registry
+    - create_migration_log
   next:
-    - migrate_existing_assets_to_registries
     - add_registry_validation
+    - register_feature_capabilities
+    - build_registry_index
     - build_agent_dispatcher
     - connect_drive_archive
