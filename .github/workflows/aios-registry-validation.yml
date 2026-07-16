@@ -1,0 +1,41 @@
+name: AIOS Registry Validation
+
+on:
+  push:
+    paths:
+      - 'aios/**'
+      - '.github/workflows/aios-registry-validation.yml'
+  pull_request:
+    paths:
+      - 'aios/**'
+      - '.github/workflows/aios-registry-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install validator dependency
+        run: python -m pip install --disable-pip-version-check PyYAML==6.0.2
+
+      - name: Validate AIOS registries
+        run: python aios/tools/validate_registries.py
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aios-registry-validation-report
+          path: aios/reports/registry-validation-latest.json
+          if-no-files-found: error
