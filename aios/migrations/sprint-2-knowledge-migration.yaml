@@ -1,0 +1,87 @@
+migration:
+  id: MIG-AIOS-S2-001
+  name: AIOS Sprint 2 Knowledge Layer Migration
+  version: 1.0.0
+  owner: Hudson Mar
+  started_at: 2026-07-16
+  updated_at: 2026-07-16
+  status: completed_phase_1
+  source_repository: hudsonmar-852/prompt2
+  production_impact: none
+
+scope:
+  included:
+    - data/templates.js
+    - template definitions
+    - prompt pattern definitions
+    - registry cross-references
+  excluded_for_later_phase:
+    - JavaScript application logic
+    - CSS and page presentation
+    - localStorage runtime records
+    - exported user-generated prompt files
+
+migration_rules:
+  - Preserve existing production source files unchanged
+  - Registry records reference rather than replace runtime assets
+  - Assign stable IDs and semantic versions
+  - Record source path and migration date
+  - Include validation and human-review requirements
+  - Never mark an unverified asset as approved
+
+inventory:
+  scanned_assets:
+    - path: data/templates.js
+      type: source_file
+      status: migrated
+      discovered_templates: 6
+      discovered_feature_cards: 4
+
+migrated_objects:
+  templates:
+    total: 6
+    registry: aios/registries/template-registry.yaml
+    ids: [TPL-001, TPL-002, TPL-003, TPL-004, TPL-005, TPL-006]
+  prompt_patterns:
+    total: 5
+    registry: aios/registries/prompt-pattern-registry.yaml
+    ids: [PPT-001, PPT-002, PPT-003, PPT-004, PPT-005]
+
+mapping:
+  - source_key: extractor
+    template_id: TPL-001
+    prompt_pattern_id: PPT-001
+  - source_key: image
+    template_id: TPL-002
+    prompt_pattern_id: PPT-002
+  - source_key: video
+    template_id: TPL-003
+    prompt_pattern_id: PPT-003
+  - source_key: character
+    template_id: TPL-004
+    prompt_pattern_id: PPT-002
+  - source_key: grok
+    template_id: TPL-005
+    prompt_pattern_id: PPT-004
+  - source_key: workflow
+    template_id: TPL-006
+    prompt_pattern_id: PPT-005
+
+quality_checks:
+  source_traceability: passed
+  stable_ids_assigned: passed
+  semantic_versions_present: passed
+  validation_rules_present: passed
+  production_files_unchanged: passed
+  rollback_available: passed
+
+rollback:
+  method: Remove the new Sprint 2 registry and migration files.
+  production_source_restore_required: false
+  affected_runtime_files: []
+
+next_actions:
+  - Add machine-readable registry validator
+  - Register feature cards as capability objects
+  - Add registry index for agent retrieval
+  - Introduce lifecycle states for draft and deprecated assets
