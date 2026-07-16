@@ -1,0 +1,65 @@
+schema_version: "1.0"
+registry:
+  id: REG-SKILL-001
+  name: AIOS Skill Registry
+  version: "1.0.0"
+  updated_at: "2026-07-16"
+
+skill_schema:
+  required: [id, name, version, status, purpose, inputs, outputs, quality_checks, location]
+
+skills:
+  - id: SK-001
+    name: Research and Source Verification
+    version: "1.0.0"
+    status: active
+    purpose: Gather current, relevant information and distinguish verified facts from assumptions.
+    inputs: [research_question, scope, freshness_requirement]
+    outputs: [findings, sources, uncertainty_notes]
+    restrictions: [no_fabricated_sources, mark_inferences, respect_source_dates]
+    quality_checks: [source_relevance, source_recency, cross_check_material_claims]
+    location: aios/skills/research-source-verification.md
+
+  - id: SK-002
+    name: Prompt Pattern Design
+    version: "1.0.0"
+    status: active
+    purpose: Convert a goal into a reusable prompt pattern with inputs, constraints, outputs and tests.
+    inputs: [goal, context, constraints, output_format]
+    outputs: [prompt_pattern_card, short_prompt, full_prompt]
+    restrictions: [preserve_user_intent, avoid_unverifiable_capabilities]
+    quality_checks: [clarity, completeness, reusability, failure_case_coverage]
+    location: aios/skills/prompt-pattern-design.md
+
+  - id: SK-003
+    name: Workflow Architecture
+    version: "1.0.0"
+    status: active
+    purpose: Design maintainable workflows using modular steps, dependencies, controls and rollback.
+    inputs: [objective, trigger, systems, constraints]
+    outputs: [workflow_definition, dependencies, safety_gate, rollback_plan]
+    restrictions: [minimum_required_permissions, no_hidden_irreversible_actions]
+    quality_checks: [logical_sequence, maintainability, recoverability, measurable_success]
+    location: aios/skills/workflow-architecture.md
+
+  - id: SK-004
+    name: Quality Assurance Review
+    version: "1.0.0"
+    status: active
+    purpose: Validate output accuracy, logic, usability, provenance and policy compliance.
+    inputs: [artifact, acceptance_criteria, risk_level]
+    outputs: [review_result, defects, recommended_actions]
+    restrictions: [do_not_approve_unknown_high_risk_claims]
+    quality_checks: [accuracy, completeness, consistency, usability, provenance]
+    location: aios/skills/quality-assurance-review.md
+
+  - id: SK-005
+    name: Knowledge Archiving
+    version: "1.0.0"
+    status: designed
+    purpose: Store approved deliverables with metadata, version, source and retrieval tags.
+    inputs: [artifact, metadata, destination]
+    outputs: [archive_record, retrieval_reference]
+    restrictions: [redact_sensitive_data, preserve_version_history]
+    quality_checks: [metadata_complete, location_valid, retrieval_tested]
+    location: aios/skills/knowledge-archiving.md
