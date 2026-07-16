@@ -1,0 +1,92 @@
+schema_version: "1.0"
+aios:
+  id: AIOS-CORE
+  name: Hudson AI Operating System
+  version: "1.1.0"
+  release: Foundation Sprint 1
+  owner: Hudson Mar
+  status: active
+  updated_at: "2026-07-16"
+
+principles:
+  - reusable_by_default
+  - source_traceable
+  - human_review_for_high_impact
+  - version_controlled
+  - minimum_necessary_access
+  - rollback_ready
+
+layers:
+  kernel:
+    status: active
+    components:
+      - manifest
+      - object_registry
+      - skill_registry
+      - workflow_registry
+      - context_engine
+      - version_manager
+  knowledge:
+    status: active
+    components:
+      - prompts
+      - workflows
+      - skills
+      - templates
+      - sop
+      - research
+  automation:
+    status: partial
+    connectors:
+      github: enabled
+      google_drive: designed
+      webhook: designed
+      gmail: planned
+      calendar: planned
+  agents:
+    status: designed
+    components:
+      - research_agent
+      - interview_agent
+      - content_agent
+      - automation_agent
+      - qa_agent
+  reports:
+    daily: designed
+    weekly: designed
+
+registries:
+  objects: aios/registries/object-registry.yaml
+  skills: aios/registries/skill-registry.yaml
+  workflows: aios/registries/workflow-registry.yaml
+
+safety_gate:
+  source_required: true
+  permission_check_required: true
+  validation_required: true
+  human_approval_for_high_impact: true
+  rollback_plan_required: true
+
+provenance:
+  required_fields:
+    - source
+    - source_date
+    - generated_by
+    - model_or_tool
+    - version
+    - human_review_status
+    - archive_location
+
+deployment:
+  repository: hudsonmar-852/prompt2
+  branch: main
+  production_site: github_pages
+  compatibility_rule: "AIOS core files must not break the existing Prompt2 web application."
+
+roadmap:
+  current_sprint: sprint_1_core
+  next:
+    - migrate_existing_assets_to_registries
+    - add_registry_validation
+    - build_agent_dispatcher
+    - connect_drive_archive
