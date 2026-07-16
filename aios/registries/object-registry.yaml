@@ -1,0 +1,110 @@
+schema_version: "1.0"
+registry:
+  id: REG-OBJECT-001
+  name: AIOS Object Registry
+  version: "1.0.0"
+  updated_at: "2026-07-16"
+
+object_schema:
+  required:
+    - id
+    - type
+    - name
+    - version
+    - status
+    - owner
+    - location
+    - created_at
+    - updated_at
+  optional:
+    - description
+    - tags
+    - dependencies
+    - source
+    - source_date
+    - confidence
+    - sensitivity
+    - retention
+    - review_status
+    - rollback_location
+
+allowed_types:
+  - project
+  - workflow
+  - skill
+  - prompt
+  - template
+  - sop
+  - automation
+  - agent
+  - report
+  - document
+  - person
+  - company
+  - meeting
+  - task
+  - research
+
+status_values:
+  - draft
+  - active
+  - review
+  - deprecated
+  - archived
+  - blocked
+
+objects:
+  - id: PRJ-AIOS-FOUNDATION
+    type: project
+    name: AIOS Foundation
+    version: "1.1.0"
+    status: active
+    owner: Hudson Mar
+    description: Core architecture for reusable knowledge, workflows, skills, automation and agents.
+    tags: [aios, foundation, architecture]
+    dependencies: []
+    location: aios/
+    source: user-approved architecture
+    source_date: "2026-07-16"
+    confidence: high
+    sensitivity: internal
+    retention: permanent
+    review_status: approved
+    created_at: "2026-07-12"
+    updated_at: "2026-07-16"
+
+  - id: SYS-AIOS-MANIFEST
+    type: document
+    name: AIOS Manifest
+    version: "1.0.0"
+    status: active
+    owner: Hudson Mar
+    tags: [kernel, manifest]
+    dependencies: [PRJ-AIOS-FOUNDATION]
+    location: aios/core/aios-manifest.yaml
+    source: AIOS Foundation Sprint 1
+    source_date: "2026-07-16"
+    confidence: high
+    sensitivity: internal
+    retention: permanent
+    review_status: approved
+    created_at: "2026-07-16"
+    updated_at: "2026-07-16"
+
+  - id: REG-OBJECT-001
+    type: document
+    name: AIOS Object Registry
+    version: "1.0.0"
+    status: active
+    owner: Hudson Mar
+    tags: [kernel, registry, objects]
+    dependencies: [SYS-AIOS-MANIFEST]
+    location: aios/registries/object-registry.yaml
+    source: AIOS Foundation Sprint 1
+    source_date: "2026-07-16"
+    confidence: high
+    sensitivity: internal
+    retention: permanent
+    review_status: approved
+    created_at: "2026-07-16"
+    updated_at: "2026-07-16"
