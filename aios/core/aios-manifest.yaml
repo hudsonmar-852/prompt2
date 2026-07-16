@@ -2,8 +2,8 @@ schema_version: "1.0"
 aios:
   id: AIOS-CORE
   name: Hudson AI Operating System
-  version: "1.2.0"
-  release: Foundation Sprint 2 Knowledge Layer
+  version: "1.2.1"
+  release: Foundation Sprint 2 Registry Validation
   owner: Hudson Mar
   status: active
   updated_at: "2026-07-16"
@@ -26,6 +26,7 @@ layers:
       - workflow_registry
       - context_engine
       - version_manager
+      - registry_validator
   knowledge:
     status: active
     components:
@@ -41,6 +42,7 @@ layers:
     status: partial
     connectors:
       github: enabled
+      github_actions_validation: enabled
       google_drive: designed
       webhook: designed
       gmail: planned
@@ -56,6 +58,7 @@ layers:
   reports:
     daily: designed
     weekly: designed
+    registry_validation: enabled
 
 registries:
   objects: aios/registries/object-registry.yaml
@@ -63,6 +66,20 @@ registries:
   workflows: aios/registries/workflow-registry.yaml
   templates: aios/registries/template-registry.yaml
   prompt_patterns: aios/registries/prompt-pattern-registry.yaml
+
+validation:
+  status: active
+  engine: aios/tools/validate_registries.py
+  guide: aios/tools/README.md
+  workflow: .github/workflows/aios-registry-validation.yml
+  report: aios/reports/registry-validation-latest.json
+  blocking_checks:
+    - yaml_syntax
+    - required_object_fields
+    - duplicate_ids_within_registry
+  advisory_checks:
+    - unresolved_dependencies
+    - missing_source_paths
 
 migrations:
   sprint_2_knowledge: aios/migrations/sprint-2-knowledge-migration.yaml
@@ -73,7 +90,7 @@ migration_status:
   templates_registered: 6
   prompt_patterns_registered: 5
   runtime_files_modified: false
-  phase: completed_phase_1
+  phase: completed_phase_2_validation
 
 safety_gate:
   source_required: true
@@ -99,7 +116,7 @@ deployment:
   compatibility_rule: "AIOS core files must not break the existing Prompt2 web application."
 
 roadmap:
-  current_sprint: sprint_2_knowledge_layer
+  current_sprint: sprint_2_registry_validation
   completed:
     - create_core_manifest
     - create_object_registry
@@ -108,9 +125,12 @@ roadmap:
     - migrate_templates
     - create_prompt_pattern_registry
     - create_migration_log
+    - add_registry_validation_engine
+    - add_github_actions_validation
+    - add_machine_readable_validation_report
   next:
-    - add_registry_validation
     - register_feature_capabilities
     - build_registry_index
+    - add_validation_test_fixtures
     - build_agent_dispatcher
     - connect_drive_archive
