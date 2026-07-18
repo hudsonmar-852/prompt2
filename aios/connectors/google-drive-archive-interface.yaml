@@ -1,0 +1,54 @@
+schema_version: "1.0"
+connector_interface:
+  id: CONN-GDRIVE-ARCHIVE-001
+  name: Google Drive Archive Interface
+  version: "1.0.0"
+  status: designed
+  updated_at: "2026-07-18"
+
+purpose: Archive approved AIOS artifacts with provenance, version and retrieval metadata without making Google Drive the system source of truth.
+
+source_of_truth:
+  architecture_and_registries: github
+  approved_document_archive: google_drive
+  grounded_research_workspace: notebooklm
+
+inputs:
+  required: [artifact, artifact_id, artifact_type, version, approval_status, provenance]
+  optional: [project, service, workflow, tags, retention_classification, destination_folder]
+
+archive_record:
+  required_fields:
+    - artifact_id
+    - version
+    - checksum_or_commit_reference
+    - source_repository
+    - workflow_id
+    - generated_by
+    - provider_and_model_or_tool
+    - human_review_status
+    - archived_at
+    - drive_location
+    - retrieval_tags
+
+permissions:
+  default: read_metadata_only
+  write: requires_approved_workflow
+  overwrite: prohibited
+  delete: human_approval_required
+
+write_policy:
+  create_new_version_instead_of_overwrite: true
+  redact_sensitive_data_before_archive: true
+  verify_destination_before_write: true
+  confirm_archive_record_after_write: true
+
+rollback:
+  method: retain_previous_drive_version_and_git_reference
+  destructive_rollback_allowed: false
+
+implementation_backlog:
+  - map_drive_folder_ids
+  - implement_connector_adapter
+  - add_archive_smoke_test
+  - add_retrieval_test

@@ -1,0 +1,69 @@
+schema_version: "1.0"
+dispatcher:
+  id: DISPATCH-AIOS-001
+  name: AIOS Agent Dispatcher
+  version: "1.0.0"
+  status: production_specification
+  updated_at: "2026-07-18"
+
+inputs:
+  required: [request, available_context, risk_level]
+  optional: [target_destination, preferred_provider, cost_limit, deadline, identity_anchor, scene_reference]
+
+classification:
+  dimensions: [intent, task_class, modality, complexity, risk, freshness, external_write, identity_critical]
+
+routing:
+  registry_index: aios/index/registry-index.yaml
+  workflow_registry: aios/registries/workflow-registry.yaml
+  skill_registry: aios/registries/skill-registry.yaml
+  model_alias_registry: aios/registries/model-alias-registry.yaml
+  runtime_adapter_registry: aios/registries/runtime-adapter-registry.yaml
+
+execution_sequence:
+  - classify_request
+  - resolve_workflow
+  - resolve_required_skills
+  - load_capability_package
+  - resolve_model_alias
+  - select_compatible_runtime_adapter
+  - apply_permission_cost_and_retry_guardrails
+  - execute
+  - validate_output
+  - request_human_approval_when_required
+  - deliver_or_publish
+  - archive_provenance
+  - record_value_metrics
+
+routing_rules:
+  image_requests: WF-004
+  multi_provider_tasks: WF-005
+  repository_updates: WF-003
+  reusable_prompt_registration: WF-002
+  default_substantial_delivery: WF-001
+
+safety:
+  external_write_requires_approval: true
+  high_impact_requires_human_review: true
+  identity_critical_requires_human_review_after_failed_retry_budget: true
+  provider_model_ids_must_not_be_hardcoded: true
+  cost_limit_required_for_agentic_execution: true
+  maximum_attempts_required_for_retryable_workflows: true
+  rollback_required_for_system_changes: true
+
+outputs:
+  - dispatch_record
+  - selected_workflow
+  - selected_skills
+  - model_alias
+  - runtime_adapter
+  - approval_requirement
+  - execution_result
+  - provenance_record
+  - value_metrics
+
+fallback:
+  no_workflow_match: route_to_WF-001_with_manual_review
+  no_adapter_match: stop_and_report_unavailable_capability
+  cost_limit_exceeded: stop_before_execution
+  validation_failed: retry_within_budget_or_escalate

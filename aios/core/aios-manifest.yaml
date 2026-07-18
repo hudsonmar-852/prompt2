@@ -1,27 +1,19 @@
-schema_version: "1.2"
+schema_version: "1.3"
 aios:
   id: AIOS-CORE
   name: Hudson AI Operating System
-  version: "1.4.0"
-  release: Production Registries and Image Specification Standard
+  version: "1.5.0"
+  release: Production Dispatcher and Validation Controls
   owner: Hudson Mar
   status: active
   updated_at: "2026-07-18"
 
-principles:
-  - reusable_by_default
-  - source_traceable
-  - human_review_for_high_impact
-  - version_controlled
-  - minimum_necessary_access
-  - rollback_ready
-  - provider_neutral_core
-  - value_over_volume
+principles: [reusable_by_default, source_traceable, human_review_for_high_impact, version_controlled, minimum_necessary_access, rollback_ready, provider_neutral_core, value_over_volume]
 
 layers:
   kernel:
     status: active
-    components: [manifest, object_registry, skill_registry, workflow_registry, context_engine, version_manager, registry_validator, model_alias_router, capability_package_contract]
+    components: [manifest, object_registry, skill_registry, workflow_registry, context_engine, version_manager, registry_validator, registry_index, model_alias_router, capability_package_contract, agent_dispatcher]
   knowledge:
     status: active
     components: [prompts, prompt_patterns, workflows, skills, templates, sop, research, migration_log, image_failure_learning, image_style_library]
@@ -30,32 +22,29 @@ layers:
     connectors:
       github: enabled
       github_actions_validation: enabled
-      google_drive: designed
+      google_drive_archive: interface_ready
       webhook: designed
       gmail: planned
       calendar: planned
   agents:
-    status: partial
-    components: [research_agent, interview_agent, content_agent, automation_agent, qa_agent, image_production_agent, runtime_router]
+    status: production_specification
+    components: [research_agent, interview_agent, content_agent, automation_agent, qa_agent, image_production_agent, runtime_router, agent_dispatcher]
   image_engine:
     status: production_standard
-    capabilities: [task_classification, identity_scene_separation, identity_preservation, scene_reconstruction, provider_neutral_image_spec, commercial_realism_defaults, controlled_quality_retry, style_registry, provenance_and_failure_learning]
     production_workflow: WF-004
     specification: aios/schemas/image-spec-schema.yaml
     style_registry: aios/registries/image-style-registry.yaml
   runtime:
     status: production_standard
-    capabilities: [model_aliases, provider_adapters, fallback_chains, cost_guardrails, lifecycle_management]
     production_workflow: WF-005
     model_alias_registry: aios/registries/model-alias-registry.yaml
     runtime_adapter_registry: aios/registries/runtime-adapter-registry.yaml
   reports:
-    daily: designed
-    weekly: designed
     registry_validation: enabled
     value_metrics: active
 
 registries:
+  index: aios/index/registry-index.yaml
   objects: aios/registries/object-registry.yaml
   skills: aios/registries/skill-registry.yaml
   workflows: aios/registries/workflow-registry.yaml
@@ -68,15 +57,26 @@ registries:
 schemas:
   image_spec: aios/schemas/image-spec-schema.yaml
 
+dispatcher:
+  status: production_specification
+  path: aios/dispatcher/agent-dispatcher.yaml
+
+connectors:
+  google_drive_archive:
+    status: interface_ready
+    path: aios/connectors/google-drive-archive-interface.yaml
+
 validation:
   status: active
   engine: aios/tools/validate_registries.py
-  guide: aios/tools/README.md
+  engine_version: "1.1.0"
   workflow: .github/workflows/aios-registry-validation.yml
   report: aios/reports/registry-validation-latest.json
-  blocking_checks: [yaml_syntax, required_object_fields, duplicate_ids_within_registry]
-  advisory_checks: [unresolved_dependencies, missing_source_paths]
-  registry_scope: [objects, skills, workflows, templates, prompt_patterns, model_aliases, runtime_adapters, image_styles]
+  fixtures:
+    valid: aios/tests/fixtures/valid-model-alias-registry.yaml
+    invalid: aios/tests/fixtures/invalid-model-alias-registry.yaml
+  blocking_checks: [yaml_syntax, registry_specific_required_fields, duplicate_ids_within_collection]
+  advisory_checks: [unresolved_dependencies, missing_source_paths, unknown_fallback_alias, unknown_supported_alias]
 
 safety_gate:
   source_required: true
@@ -97,49 +97,35 @@ deployment:
   branch: main
   production_site: github_pages
   compatibility_rule: "AIOS core files must not break the existing Prompt2 web application."
-  production_policy: "Registry, schema and skill updates may be promoted independently when validation passes and runtime files remain unchanged."
+  runtime_files_modified: false
 
 migration_status:
-  source_file: data/templates.js
-  templates_discovered: 6
-  templates_registered: 6
-  prompt_patterns_registered: 5
   skills_registered: 10
   workflows_registered: 5
   model_aliases_registered: 6
   runtime_adapters_registered: 7
   image_styles_registered: 6
   image_schemas_registered: 1
-  runtime_files_modified: false
-  phase: production_registry_standard
+  registry_index_registered: 1
+  dispatcher_specs_registered: 1
+  connector_interfaces_registered: 1
+  phase: production_dispatch_ready
 
 roadmap:
-  current_sprint: sprint_3_production_registries
+  current_sprint: sprint_4_dispatch_validation
   completed:
-    - create_core_manifest
-    - create_object_registry
-    - create_skill_registry
-    - create_workflow_registry
-    - migrate_templates
-    - create_prompt_pattern_registry
-    - create_migration_log
-    - add_registry_validation_engine
-    - add_github_actions_validation
-    - add_machine_readable_validation_report
-    - register_model_routing_and_lifecycle_skill
-    - register_capability_package_and_runtime_adapter_skill
-    - register_image_reconstruction_skill
-    - register_controlled_image_qa_skill
-    - register_agent_value_metrics_skill
-    - activate_image_production_workflow
-    - activate_multi_provider_execution_workflow
     - create_model_alias_registry
     - create_runtime_adapter_registry
     - create_image_style_registry
     - create_image_spec_schema
-  next:
     - extend_validator_for_registry_specific_required_fields
     - add_validation_test_fixtures
     - build_registry_index
-    - build_agent_dispatcher
-    - connect_drive_archive
+    - build_agent_dispatcher_specification
+    - create_google_drive_archive_interface
+  next:
+    - implement_dispatcher_runtime
+    - add_dispatcher_unit_tests
+    - implement_google_drive_connector_adapter
+    - add_archive_smoke_and_retrieval_tests
+    - connect_value_metrics_dashboard

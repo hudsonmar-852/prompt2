@@ -1,0 +1,12 @@
+schema_version: "1.0"
+registry:
+  id: REG-TEST-MODEL-ALIAS-INVALID
+  name: Invalid Model Alias Fixture
+  version: "1.0.0"
+  updated_at: "2026-07-18"
+alias_schema:
+  required: [id, alias, status, purpose, task_classes, quality_tier, cost_tier, fallback_aliases, lifecycle_policy]
+aliases:
+  - id: MA-TEST-INVALID
+    alias: missing_required_fields
+    status: active

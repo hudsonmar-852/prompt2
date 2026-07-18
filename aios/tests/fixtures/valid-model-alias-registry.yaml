@@ -1,0 +1,18 @@
+schema_version: "1.0"
+registry:
+  id: REG-TEST-MODEL-ALIAS-VALID
+  name: Valid Model Alias Fixture
+  version: "1.0.0"
+  updated_at: "2026-07-18"
+alias_schema:
+  required: [id, alias, status, purpose, task_classes, quality_tier, cost_tier, fallback_aliases, lifecycle_policy]
+aliases:
+  - id: MA-TEST-001
+    alias: test_standard
+    status: active
+    purpose: Validator positive fixture.
+    task_classes: [test]
+    quality_tier: standard
+    cost_tier: balanced
+    fallback_aliases: []
+    lifecycle_policy: replace_without_workflow_change
