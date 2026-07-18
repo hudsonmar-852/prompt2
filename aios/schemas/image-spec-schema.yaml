@@ -1,0 +1,88 @@
+schema_version: "1.0"
+schema:
+  id: SCHEMA-IMAGE-SPEC-001
+  name: AIOS Provider-Neutral Image Specification
+  version: "1.0.0"
+  status: active
+  updated_at: "2026-07-18"
+
+required_sections:
+  - task
+  - subject
+  - identity
+  - composition
+  - lighting
+  - camera
+  - realism
+  - constraints
+  - delivery
+
+image_spec:
+  task:
+    required: [type, intended_use]
+    allowed_types: [portrait, product, architecture, food, landscape, ui, illustration, infographic, marketing, social_media]
+
+  subject:
+    required: [description]
+    optional: [age_range, ethnicity, body_type, expression, pose, wardrobe]
+
+  identity:
+    required_when_person_present: [preservation_level]
+    optional: [identity_anchor, face_geometry, skull_shape, eye_spacing, nose_bridge, lip_shape, hairline, body_proportion, age_consistency]
+    rules:
+      - preserve_identity_not_pixels
+      - separate_identity_anchor_from_scene_reference
+      - do_not_change_identity_without_explicit_instruction
+
+  scene:
+    optional: [scene_reference, environment, background, props, time_of_day, weather]
+
+  composition:
+    required: [framing, aspect_ratio]
+    optional: [camera_angle, subject_position, negative_space, crop_rules]
+
+  lighting:
+    required: [style]
+    optional: [direction, softness, contrast, color_temperature, practical_lights]
+
+  camera:
+    required: [render_intent]
+    optional: [sensor_format, lens, focal_length, aperture, depth_of_field, shutter_behavior]
+
+  realism:
+    required: [level]
+    defaults:
+      skin: natural_pores_and_texture
+      imperfections: retain_natural_human_detail
+      under_eye_treatment: reduce_discoloration_naturally_without_changing_identity
+      optics: realistic_depth_and_lens_behavior
+      dynamic_range: professional_photography
+
+  style:
+    optional: [style_id, mood, color_direction, reference_notes]
+
+  constraints:
+    required: [negative_constraints]
+    optional: [text_rules, logo_rules, anatomy_rules, prohibited_changes]
+
+  runtime:
+    required: [model_alias, maximum_attempts, cost_limit]
+    optional: [preferred_adapter, fallback_adapter]
+
+  quality_thresholds:
+    required: [identity, anatomy, lighting, perspective, artifacts]
+    optional: [hands, eyes, text, background, commercial_realism]
+
+  delivery:
+    required: [format, dimensions, approval_requirement]
+    optional: [variants, channels, archive_location]
+
+provenance_required:
+  - image_spec_version
+  - provider
+  - actual_model_or_tool
+  - identity_anchor_reference
+  - scene_reference
+  - retry_count
+  - qa_scorecard
+  - human_review_status
