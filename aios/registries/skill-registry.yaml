@@ -1,9 +1,9 @@
-schema_version: "1.0"
+schema_version: "1.1"
 registry:
   id: REG-SKILL-001
   name: AIOS Skill Registry
-  version: "1.0.0"
-  updated_at: "2026-07-16"
+  version: "1.1.0"
+  updated_at: "2026-07-18"
 
 skill_schema:
   required: [id, name, version, status, purpose, inputs, outputs, quality_checks, location]
@@ -63,3 +63,58 @@ skills:
     restrictions: [redact_sensitive_data, preserve_version_history]
     quality_checks: [metadata_complete, location_valid, retrieval_tested]
     location: aios/skills/knowledge-archiving.md
+
+  - id: SK-006
+    name: Model Routing and Lifecycle Management
+    version: "1.0.0"
+    status: active
+    purpose: Route tasks to the lowest-cost model that meets quality, latency and risk requirements while isolating model retirements through aliases.
+    inputs: [task_profile, risk_level, quality_threshold, cost_limit, provider_availability]
+    outputs: [model_alias, selected_runtime, fallback_chain, routing_record]
+    restrictions: [no_hardcoded_model_in_core_pipeline, respect_provider_policy, use_post_promotion_price_for_benchmark]
+    quality_checks: [quality_threshold_met, fallback_available, cost_guardrail_met, lifecycle_status_valid]
+    location: aios/skills/model-routing-lifecycle.md
+
+  - id: SK-007
+    name: Capability Package and Runtime Adapter Design
+    version: "1.0.0"
+    status: active
+    purpose: Package skills, tools, templates, permissions and policies into provider-neutral capabilities that can run through replaceable adapters.
+    inputs: [mission, capability_requirements, tools, providers, permissions]
+    outputs: [capability_package, runtime_adapter_contract, approval_policy, rollback_contract]
+    restrictions: [provider_neutral_core, minimum_permissions, source_of_truth_outside_runtime]
+    quality_checks: [adapter_replaceable, permissions_explicit, schemas_valid, rollback_defined]
+    location: aios/skills/capability-runtime-adapter.md
+
+  - id: SK-008
+    name: Image Reconstruction and Identity Preservation
+    version: "1.0.0"
+    status: active
+    purpose: Convert image requests into structured re-shoot specifications that preserve identity, reconstruct scenes and produce realistic commercial-quality outputs.
+    inputs: [source_images, user_intent, target_use, identity_anchor, scene_reference]
+    outputs: [image_spec, provider_prompt, generated_asset, provenance_record]
+    restrictions: [preserve_identity_not_pixels, no_unrequested_identity_change, natural_anatomy, provider_neutral_spec]
+    quality_checks: [identity_accuracy, anatomy, lighting, perspective, artifact_check, commercial_realism]
+    location: aios/skills/image-reconstruction-engine.md
+
+  - id: SK-009
+    name: Image Quality Evaluation and Controlled Retry
+    version: "1.0.0"
+    status: active
+    purpose: Evaluate generated images against identity, realism and delivery criteria and retry within defined cost and attempt limits.
+    inputs: [generated_asset, image_spec, acceptance_thresholds, retry_budget]
+    outputs: [qa_scorecard, approved_asset, retry_decision, defect_record]
+    restrictions: [maximum_attempts_required, no_unbounded_retry, human_review_for_identity_critical_output]
+    quality_checks: [identity, eyes, hands, anatomy, text, background, lighting, artifacts]
+    location: aios/skills/image-quality-controlled-retry.md
+
+  - id: SK-010
+    name: Agent Value and Production Metrics
+    version: "1.0.0"
+    status: active
+    purpose: Measure approved outcomes, human rework, rollback, cost, reuse and delivery speed instead of output volume alone.
+    inputs: [runtime_records, approval_records, token_usage, cost_data, artifact_reuse]
+    outputs: [value_metrics, provider_benchmark, improvement_actions]
+    restrictions: [no_vanity_metrics_as_primary_kpi, preserve_metric_provenance]
+    quality_checks: [metrics_traceable, approved_outcomes_counted, cost_complete, rework_captured]
+    location: aios/skills/agent-value-metrics.md
