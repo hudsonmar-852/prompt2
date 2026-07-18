@@ -1,12 +1,12 @@
-schema_version: "1.0"
+schema_version: "1.1"
 aios:
   id: AIOS-CORE
   name: Hudson AI Operating System
-  version: "1.2.1"
-  release: Foundation Sprint 2 Registry Validation
+  version: "1.3.0"
+  release: Production Capability and Image Engine Integration
   owner: Hudson Mar
   status: active
-  updated_at: "2026-07-16"
+  updated_at: "2026-07-18"
 
 principles:
   - reusable_by_default
@@ -15,29 +15,16 @@ principles:
   - version_controlled
   - minimum_necessary_access
   - rollback_ready
+  - provider_neutral_core
+  - value_over_volume
 
 layers:
   kernel:
     status: active
-    components:
-      - manifest
-      - object_registry
-      - skill_registry
-      - workflow_registry
-      - context_engine
-      - version_manager
-      - registry_validator
+    components: [manifest, object_registry, skill_registry, workflow_registry, context_engine, version_manager, registry_validator, model_alias_router, capability_package_contract]
   knowledge:
     status: active
-    components:
-      - prompts
-      - prompt_patterns
-      - workflows
-      - skills
-      - templates
-      - sop
-      - research
-      - migration_log
+    components: [prompts, prompt_patterns, workflows, skills, templates, sop, research, migration_log, image_failure_learning]
   automation:
     status: partial
     connectors:
@@ -48,17 +35,21 @@ layers:
       gmail: planned
       calendar: planned
   agents:
-    status: designed
-    components:
-      - research_agent
-      - interview_agent
-      - content_agent
-      - automation_agent
-      - qa_agent
+    status: partial
+    components: [research_agent, interview_agent, content_agent, automation_agent, qa_agent, image_production_agent, runtime_router]
+  image_engine:
+    status: production_baseline
+    capabilities: [task_classification, identity_scene_separation, identity_preservation, scene_reconstruction, provider_neutral_image_spec, commercial_realism_defaults, controlled_quality_retry, provenance_and_failure_learning]
+    production_workflow: WF-004
+  runtime:
+    status: production_baseline
+    capabilities: [model_aliases, provider_adapters, fallback_chains, cost_guardrails, lifecycle_management]
+    production_workflow: WF-005
   reports:
     daily: designed
     weekly: designed
     registry_validation: enabled
+    value_metrics: active
 
 registries:
   objects: aios/registries/object-registry.yaml
@@ -73,24 +64,8 @@ validation:
   guide: aios/tools/README.md
   workflow: .github/workflows/aios-registry-validation.yml
   report: aios/reports/registry-validation-latest.json
-  blocking_checks:
-    - yaml_syntax
-    - required_object_fields
-    - duplicate_ids_within_registry
-  advisory_checks:
-    - unresolved_dependencies
-    - missing_source_paths
-
-migrations:
-  sprint_2_knowledge: aios/migrations/sprint-2-knowledge-migration.yaml
-
-migration_status:
-  source_file: data/templates.js
-  templates_discovered: 6
-  templates_registered: 6
-  prompt_patterns_registered: 5
-  runtime_files_modified: false
-  phase: completed_phase_2_validation
+  blocking_checks: [yaml_syntax, required_object_fields, duplicate_ids_within_registry]
+  advisory_checks: [unresolved_dependencies, missing_source_paths]
 
 safety_gate:
   source_required: true
@@ -98,25 +73,33 @@ safety_gate:
   validation_required: true
   human_approval_for_high_impact: true
   rollback_plan_required: true
+  cost_guardrail_required_for_agentic_runs: true
+  retry_limit_required: true
 
 provenance:
-  required_fields:
-    - source
-    - source_date
-    - generated_by
-    - model_or_tool
-    - version
-    - human_review_status
-    - archive_location
+  required_fields: [source, source_date, generated_by, model_or_tool, version, human_review_status, archive_location]
+  runtime_fields: [provider, actual_model, model_alias, token_or_credit_usage, estimated_cost, actual_cost, retry_count]
+  image_fields: [identity_anchor, scene_reference, image_spec_version, qa_scorecard, approval_status]
 
 deployment:
   repository: hudsonmar-852/prompt2
   branch: main
   production_site: github_pages
   compatibility_rule: "AIOS core files must not break the existing Prompt2 web application."
+  production_policy: "Registry and skill updates may be promoted independently when validation passes and runtime files remain unchanged."
+
+migration_status:
+  source_file: data/templates.js
+  templates_discovered: 6
+  templates_registered: 6
+  prompt_patterns_registered: 5
+  skills_registered: 10
+  workflows_registered: 5
+  runtime_files_modified: false
+  phase: production_capability_baseline
 
 roadmap:
-  current_sprint: sprint_2_registry_validation
+  current_sprint: sprint_3_production_capabilities
   completed:
     - create_core_manifest
     - create_object_registry
@@ -128,9 +111,19 @@ roadmap:
     - add_registry_validation_engine
     - add_github_actions_validation
     - add_machine_readable_validation_report
+    - register_model_routing_and_lifecycle_skill
+    - register_capability_package_and_runtime_adapter_skill
+    - register_image_reconstruction_skill
+    - register_controlled_image_qa_skill
+    - register_agent_value_metrics_skill
+    - activate_image_production_workflow
+    - activate_multi_provider_execution_workflow
   next:
-    - register_feature_capabilities
-    - build_registry_index
+    - create_model_alias_registry
+    - create_runtime_adapter_registry
+    - create_image_style_registry
+    - create_image_spec_schema
     - add_validation_test_fixtures
+    - build_registry_index
     - build_agent_dispatcher
     - connect_drive_archive

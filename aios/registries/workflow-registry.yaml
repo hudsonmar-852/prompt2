@@ -1,9 +1,9 @@
-schema_version: "1.0"
+schema_version: "1.1"
 registry:
   id: REG-WORKFLOW-001
   name: AIOS Workflow Registry
-  version: "1.0.0"
-  updated_at: "2026-07-16"
+  version: "1.1.0"
+  updated_at: "2026-07-18"
 
 workflow_schema:
   required: [id, name, version, status, trigger, inputs, steps, skills, outputs, safety_gate, rollback]
@@ -16,17 +16,7 @@ workflows:
     trigger: User requests a substantial deliverable or approved implementation.
     inputs: [request, available_context, constraints, target_destination]
     skills: [SK-001, SK-003, SK-004, SK-005]
-    steps:
-      - understand_requirement
-      - retrieve_context
-      - research_when_required
-      - structure_solution
-      - create_draft
-      - run_quality_review
-      - obtain_or_apply_required_approval
-      - deliver_output
-      - archive_with_provenance
-      - update_registry
+    steps: [understand_requirement, retrieve_context, research_when_required, structure_solution, create_draft, run_quality_review, obtain_or_apply_required_approval, deliver_output, archive_with_provenance, update_registry]
     outputs: [approved_deliverable, provenance_record, registry_update]
     safety_gate:
       source_check: required_when_factual
@@ -37,12 +27,7 @@ workflows:
     rollback:
       method: restore_previous_version
       evidence: commit_history_or_archived_version
-    success_metrics:
-      - first_pass_acceptance
-      - rework_rate
-      - time_saved
-      - reuse_count
-      - failure_cost
+    success_metrics: [first_pass_acceptance, rework_rate, time_saved, reuse_count, failure_cost]
 
   - id: WF-002
     name: Prompt Pattern Registration
@@ -51,15 +36,7 @@ workflows:
     trigger: A reusable prompt is created or materially improved.
     inputs: [purpose, raw_prompt, constraints, examples]
     skills: [SK-002, SK-004, SK-005]
-    steps:
-      - define_purpose
-      - define_input_schema
-      - define_output_schema
-      - document_restrictions
-      - add_success_tests
-      - add_failure_cases
-      - assign_version_and_id
-      - archive_and_register
+    steps: [define_purpose, define_input_schema, define_output_schema, document_restrictions, add_success_tests, add_failure_cases, assign_version_and_id, archive_and_register]
     outputs: [prompt_pattern_card, registry_entry]
     safety_gate:
       source_check: conditional
@@ -77,13 +54,7 @@ workflows:
     trigger: User approves a repository change.
     inputs: [repository, target_path, proposed_change]
     skills: [SK-003, SK-004]
-    steps:
-      - inspect_existing_structure
-      - verify_target_and_permissions
-      - avoid_breaking_existing_runtime
-      - write_in_small_batches
-      - verify_commit_result
-      - document_change
+    steps: [inspect_existing_structure, verify_target_and_permissions, avoid_breaking_existing_runtime, write_in_small_batches, verify_commit_result, document_change]
     outputs: [commit_reference, change_summary]
     safety_gate:
       source_check: repository_state
@@ -93,3 +64,57 @@ workflows:
       rollback_plan: git_revert_or_restore_previous_blob
     rollback:
       method: git_revert_or_file_restore
+
+  - id: WF-004
+    name: Image Production Reconstruction Workflow
+    version: "1.0.0"
+    status: active
+    trigger: User requests image generation, editing, identity-preserving reconstruction or commercial re-shoot production.
+    inputs: [user_request, source_images, target_use, identity_anchor, scene_reference, delivery_constraints]
+    skills: [SK-008, SK-009, SK-004, SK-005, SK-006, SK-007, SK-010]
+    steps:
+      - classify_image_task
+      - separate_identity_and_scene_references
+      - build_provider_neutral_image_spec
+      - resolve_image_runtime_alias
+      - apply_cost_and_retry_guardrails
+      - generate_or_reconstruct
+      - score_identity_realism_and_artifacts
+      - retry_only_failed_criteria_within_budget
+      - apply_human_review_when_identity_critical
+      - approve_and_deliver
+      - archive_provenance_and_failure_learning
+      - record_value_metrics
+    outputs: [approved_image_asset, image_spec, qa_scorecard, provenance_record, value_metrics]
+    safety_gate:
+      source_check: source_images_and_user_instruction
+      permission_check: required_before_external_publish
+      validation: identity_and_quality_thresholds_required
+      human_approval: required_when_identity_critical_or_high_impact
+      rollback_plan: retain_previous_approved_asset_and_spec
+    rollback:
+      method: restore_previous_approved_asset_or_provider_prompt_version
+    runtime_policy:
+      provider_neutral_core: true
+      model_alias_required: true
+      maximum_attempts_required: true
+      cost_limit_required: true
+    success_metrics: [identity_accuracy, first_pass_acceptance, regeneration_rate, average_attempts, cost_per_approved_asset, reuse_rate]
+
+  - id: WF-005
+    name: Multi-Provider Capability Execution
+    version: "1.0.0"
+    status: active
+    trigger: A capability may be executed by more than one AI provider or runtime.
+    inputs: [mission, capability_package, quality_threshold, cost_limit, risk_level]
+    skills: [SK-006, SK-007, SK-004, SK-010]
+    steps: [resolve_capability_package, classify_task, select_model_alias, apply_provider_policy, execute_runtime_adapter, validate_output, fallback_when_required, record_actual_provider_and_cost, obtain_approval, publish_metrics]
+    outputs: [approved_artifact, runtime_record, provider_benchmark, audit_record]
+    safety_gate:
+      source_check: capability_defined_sources
+      permission_check: adapter_permissions_required
+      validation: required
+      human_approval: required_for_high_impact
+      rollback_plan: previous_adapter_or_artifact_version
+    rollback:
+      method: switch_fallback_adapter_or_restore_previous_artifact
