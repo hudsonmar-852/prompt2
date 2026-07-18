@@ -1,0 +1,101 @@
+schema_version: "1.0"
+registry:
+  id: REG-RUNTIME-ADAPTER-001
+  name: AIOS Runtime Adapter Registry
+  version: "1.0.0"
+  updated_at: "2026-07-18"
+
+adapter_schema:
+  required: [id, name, status, provider, capabilities, permissions, inputs, outputs, approval_policy, rollback]
+
+adapters:
+  - id: RA-001
+    name: OpenAI General Runtime Adapter
+    status: active
+    provider: openai
+    capabilities: [text, reasoning, coding, tool_use, image_generation, voice]
+    supported_aliases: [economy_batch, standard_general, frontier_reasoning, coding_runtime, realtime_voice, image_generation]
+    permissions: [declared_tools_only, minimum_required_access]
+    inputs: [capability_package, task_payload, policy_context, cost_limit]
+    outputs: [artifact, runtime_record, usage_record]
+    approval_policy: human_approval_for_high_impact_or_external_write
+    rollback: switch_alias_or_restore_previous_artifact
+
+  - id: RA-002
+    name: Anthropic General Runtime Adapter
+    status: active
+    provider: anthropic
+    capabilities: [text, reasoning, coding, long_context, tool_use]
+    supported_aliases: [economy_batch, standard_general, frontier_reasoning, coding_runtime]
+    permissions: [declared_tools_only, minimum_required_access]
+    inputs: [capability_package, task_payload, policy_context, cost_limit]
+    outputs: [artifact, runtime_record, usage_record]
+    approval_policy: human_approval_for_high_impact_or_external_write
+    rollback: switch_alias_or_restore_previous_artifact
+
+  - id: RA-003
+    name: Google Gemini Runtime Adapter
+    status: active
+    provider: google
+    capabilities: [text, reasoning, coding, multimodal, voice, image_generation, workspace_integration]
+    supported_aliases: [economy_batch, standard_general, frontier_reasoning, coding_runtime, realtime_voice, image_generation]
+    permissions: [declared_tools_only, minimum_required_access]
+    inputs: [capability_package, task_payload, policy_context, cost_limit]
+    outputs: [artifact, runtime_record, usage_record]
+    approval_policy: human_approval_for_high_impact_or_external_write
+    rollback: switch_alias_or_restore_previous_artifact
+
+  - id: RA-004
+    name: xAI Grok Runtime Adapter
+    status: active
+    provider: xai
+    capabilities: [text, reasoning, coding, batch_processing, image_generation]
+    supported_aliases: [economy_batch, standard_general, coding_runtime, image_generation]
+    permissions: [declared_tools_only, non_sensitive_data_by_default]
+    inputs: [capability_package, task_payload, policy_context, cost_limit]
+    outputs: [artifact, runtime_record, usage_record]
+    approval_policy: human_review_before_architecture_or_high_risk_acceptance
+    rollback: switch_alias_or_restore_previous_artifact
+
+  - id: RA-005
+    name: GitHub Copilot Coding Adapter
+    status: active
+    provider: github_copilot
+    capabilities: [coding, code_review, repository_metrics]
+    supported_aliases: [coding_runtime]
+    permissions: [repository_scoped, branch_first, review_before_merge]
+    inputs: [repository_context, task_payload, review_policy]
+    outputs: [code_change, review_result, repository_metrics]
+    approval_policy: pull_request_review_or_inherited_approved_workflow
+    rollback: git_revert_or_restore_previous_blob
+
+  - id: RA-006
+    name: NotebookLM Knowledge Adapter
+    status: designed
+    provider: notebooklm
+    capabilities: [source_grounded_research, evidence_extraction, knowledge_synthesis]
+    supported_aliases: [standard_general]
+    permissions: [approved_sources_only, read_only_by_default]
+    inputs: [source_collection, research_question, output_spec]
+    outputs: [grounded_findings, citations, knowledge_artifact]
+    approval_policy: human_review_before_external_distribution
+    rollback: restore_previous_notebook_or_artifact
+
+  - id: RA-007
+    name: Canva Visual Delivery Adapter
+    status: designed
+    provider: canva
+    capabilities: [presentation, social_design, editable_visual_asset, landing_page]
+    supported_aliases: [image_generation]
+    permissions: [approved_design_scope, publish_requires_approval]
+    inputs: [creative_package, brand_rules, output_channels]
+    outputs: [editable_design, export_assets, publish_record]
+    approval_policy: human_approval_before_publish
+    rollback: restore_previous_design_version
+
+adapter_rules:
+  provider_neutral_core: true
+  runtime_is_not_source_of_truth: true
+  actual_provider_and_model_must_be_recorded: true
+  external_write_requires_approval: true
+  fallback_or_rollback_required: true
