@@ -1,0 +1,83 @@
+schema_version: "1.0"
+registry:
+  id: REG-MODEL-ALIAS-001
+  name: AIOS Model Alias Registry
+  version: "1.0.0"
+  updated_at: "2026-07-18"
+
+alias_schema:
+  required: [id, alias, status, purpose, task_classes, quality_tier, cost_tier, fallback_aliases, lifecycle_policy]
+
+aliases:
+  - id: MA-001
+    alias: economy_batch
+    status: active
+    purpose: Low-cost classification, metadata extraction, formatting and high-volume non-sensitive processing.
+    task_classes: [classification, metadata, formatting, batch_transformation]
+    quality_tier: economy
+    cost_tier: lowest_practical
+    provider_candidates: [openai, anthropic, google, xai]
+    fallback_aliases: [standard_general]
+    lifecycle_policy: replace_provider_model_without_changing_workflow
+
+  - id: MA-002
+    alias: standard_general
+    status: active
+    purpose: Default research, drafting, analysis and general workflow execution.
+    task_classes: [research, drafting, analysis, document_generation]
+    quality_tier: standard
+    cost_tier: balanced
+    provider_candidates: [openai, anthropic, google, xai]
+    fallback_aliases: [frontier_reasoning, economy_batch]
+    lifecycle_policy: replace_provider_model_without_changing_workflow
+
+  - id: MA-003
+    alias: frontier_reasoning
+    status: active
+    purpose: Complex architecture, high-stakes review and difficult multi-step reasoning.
+    task_classes: [architecture, high_risk_review, complex_reasoning, policy_analysis]
+    quality_tier: frontier
+    cost_tier: premium
+    provider_candidates: [openai, anthropic, google]
+    fallback_aliases: [standard_general]
+    lifecycle_policy: human_review_required_on_substitution
+
+  - id: MA-004
+    alias: coding_runtime
+    status: active
+    purpose: Repository changes, code generation, refactoring, testing and controlled software execution.
+    task_classes: [coding, refactoring, testing, repository_maintenance]
+    quality_tier: standard_or_frontier
+    cost_tier: balanced
+    provider_candidates: [openai, anthropic, google, xai, github_copilot]
+    fallback_aliases: [frontier_reasoning, standard_general]
+    lifecycle_policy: require_test_pass_after_model_change
+
+  - id: MA-005
+    alias: realtime_voice
+    status: designed
+    purpose: Low-latency conversational voice interaction.
+    task_classes: [voice_assistance, realtime_interview_support]
+    quality_tier: realtime
+    cost_tier: usage_sensitive
+    provider_candidates: [openai, google]
+    fallback_aliases: [standard_general]
+    lifecycle_policy: preserve_latency_and_language_requirements
+
+  - id: MA-006
+    alias: image_generation
+    status: active
+    purpose: Image generation, reconstruction, identity-preserving re-shoot and visual asset production.
+    task_classes: [image_generation, image_editing, portrait_reconstruction, visual_design]
+    quality_tier: production_visual
+    cost_tier: controlled_retry
+    provider_candidates: [openai, google, xai, adobe, canva]
+    fallback_aliases: []
+    lifecycle_policy: benchmark_identity_and_quality_before_provider_switch
+
+routing_rules:
+  hardcoded_provider_model_ids_allowed: false
+  actual_provider_model_record_required: true
+  fallback_required_except_specialized_modalities: true
+  cost_limit_required_for_agentic_runs: true
+  human_approval_required_for_high_impact: true
