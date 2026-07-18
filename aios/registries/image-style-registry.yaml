@@ -1,0 +1,70 @@
+schema_version: "1.0"
+registry:
+  id: REG-IMAGE-STYLE-001
+  name: AIOS Image Style Registry
+  version: "1.0.0"
+  updated_at: "2026-07-18"
+
+style_schema:
+  required: [id, name, status, purpose, visual_rules, camera_rules, lighting_rules, negative_rules]
+
+styles:
+  - id: STYLE-001
+    name: Commercial Portrait
+    status: active
+    purpose: Professional full-frame portrait with natural identity, realistic optics and polished but believable post-production.
+    visual_rules: [natural_skin_texture, authentic_human_imperfections, clean_background_separation, professional_color_science]
+    camera_rules: [full_frame_intent, portrait_lens_behavior, natural_depth_of_field]
+    lighting_rules: [soft_directional_key, controlled_fill, realistic_shadow_transition]
+    negative_rules: [no_plastic_skin, no_identity_drift, no_excessive_hdr, no_fake_bokeh]
+
+  - id: STYLE-002
+    name: Premium Asian Fitness
+    status: active
+    purpose: Premium fitness imagery with athletic definition, warm bronze skin and realistic sweat highlights.
+    visual_rules: [athletic_proportion, warm_bronze_skin, natural_muscle_definition, subtle_sweat_sheen]
+    camera_rules: [commercial_fitness_lens, realistic_perspective, controlled_depth]
+    lighting_rules: [sculpted_side_light, realistic_specular_highlights, balanced_skin_tone]
+    negative_rules: [no_over_muscling, no_waxy_skin, no_anatomy_distortion, no_identity_change]
+
+  - id: STYLE-003
+    name: Corporate Executive
+    status: active
+    purpose: Credible leadership portrait suitable for CV, LinkedIn, presentation and corporate communications.
+    visual_rules: [trustworthy_expression, clean_grooming, understated_polish, age_consistency]
+    camera_rules: [eye_level_or_slightly_above, natural_telephoto_compression]
+    lighting_rules: [soft_even_key, subtle_separation_light, neutral_white_balance]
+    negative_rules: [no_over_retouching, no_fashion_exaggeration, no_false_youthfulness]
+
+  - id: STYLE-004
+    name: Luxury Lifestyle
+    status: active
+    purpose: Refined aspirational lifestyle visual with believable environment, restrained styling and editorial realism.
+    visual_rules: [premium_material_detail, elegant_composition, natural_subject_interaction, subtle_color_grading]
+    camera_rules: [editorial_lens_behavior, environmental_depth, realistic_motion]
+    lighting_rules: [motivated_practical_light, soft_contrast, controlled_highlights]
+    negative_rules: [no_gaudy_staging, no_fake_luxury_symbols, no_unrealistic_glow]
+
+  - id: STYLE-005
+    name: Documentary Realism
+    status: active
+    purpose: Observational, authentic imagery with natural imperfections and credible environmental context.
+    visual_rules: [candid_moment, environmental_truth, restrained_post_processing, natural_expression]
+    camera_rules: [handheld_documentary_intent, available_light_behavior, realistic_focus_falloff]
+    lighting_rules: [available_or_motivated_light, natural_contrast]
+    negative_rules: [no_studio_perfection, no_cinematic_overgrading, no_pose_stiffness]
+
+  - id: STYLE-006
+    name: Social Media Campaign
+    status: active
+    purpose: High-clarity visual optimized for social feeds while preserving realistic identity and editable delivery variants.
+    visual_rules: [strong_focal_subject, mobile_readability, channel_safe_composition, reusable_crop_space]
+    camera_rules: [clean_perspective, flexible_crop, sharp_subject_priority]
+    lighting_rules: [clear_subject_separation, platform_safe_contrast]
+    negative_rules: [no_baked_in_text_unless_requested, no_logo_hallucination, no_overcrowding]
+
+style_application_rules:
+  style_id_required_for_reusable_production: true
+  identity_rules_override_style_rules: true
+  user_instruction_overrides_defaults: true
+  provider_specific_syntax_stored_outside_registry: true
