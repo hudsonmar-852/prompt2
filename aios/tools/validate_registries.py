@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate AIOS YAML registries, identifiers, dependencies and source paths."""
+"""Validate AIOS YAML registries, required fields, dependencies and source paths."""
 
 from __future__ import annotations
 
@@ -15,13 +15,15 @@ import yaml
 
 REGISTRY_DIR = Path("aios/registries")
 REPORT_PATH = Path("aios/reports/registry-validation-latest.json")
-REQUIRED_OBJECT_FIELDS = {
-    "id", "type", "name", "version", "status", "owner",
-    "location", "created_at", "updated_at",
-}
+REQUIRED_OBJECT_FIELDS = {"id", "type", "name", "version", "status", "owner", "location", "created_at", "updated_at"}
 ID_KEYS = {"id", "template_id", "pattern_id", "skill_id", "workflow_id", "object_id"}
-DEPENDENCY_KEYS = {
-    "dependencies", "skills", "uses", "requires", "referenced_skills", "uses_skills"
+DEPENDENCY_KEYS = {"dependencies", "skills", "uses", "requires", "referenced_skills", "uses_skills"}
+COLLECTION_SCHEMAS = {
+    "skills": "skill_schema",
+    "workflows": "workflow_schema",
+    "aliases": "alias_schema",
+    "adapters": "adapter_schema",
+    "styles": "style_schema",
 }
 
 
@@ -41,11 +43,6 @@ def walk(node: Any):
 
 
 def collect_ids(documents: dict[Path, Any]) -> tuple[list[str], dict[str, Path]]:
-    """Collect all declared IDs for dependency resolution.
-
-    Registry IDs may intentionally reappear in the object registry as references,
-    so global repetition is not treated as an error.
-    """
     ids: list[str] = []
     locations: dict[str, Path] = {}
     for path, document in documents.items():
@@ -59,23 +56,61 @@ def collect_ids(documents: dict[Path, Any]) -> tuple[list[str], dict[str, Path]]
     return ids, locations
 
 
-def validate_local_duplicate_ids(documents: dict[Path, Any]) -> list[dict[str, str]]:
-    """Reject duplicate object IDs inside the same registry object list."""
+def validate_collection_required_fields(document: Any, path: Path) -> list[dict[str, str]]:
     errors: list[dict[str, str]] = []
+    if not isinstance(document, dict):
+        return [{"code": "INVALID_ROOT", "path": str(path), "message": "Root must be a mapping."}]
+
+    for collection, schema_key in COLLECTION_SCHEMAS.items():
+        items = document.get(collection)
+        if items is None:
+            continue
+        schema = document.get(schema_key, {})
+        required = schema.get("required", []) if isinstance(schema, dict) else []
+        if not isinstance(items, list):
+            errors.append({"code": "INVALID_COLLECTION", "path": str(path), "message": f"{collection} must be a list."})
+            continue
+        for index, item in enumerate(items):
+            if not isinstance(item, dict):
+                errors.append({"code": "INVALID_ENTRY", "path": str(path), "message": f"{collection}[{index}] must be a mapping."})
+                continue
+            missing = [field for field in required if field not in item]
+            if missing:
+                errors.append({"code": "MISSING_FIELDS", "path": str(path), "message": f"{item.get('id', index)} missing: {', '.join(missing)}"})
+    return errors
+
+
+def validate_object_registry(document: Any, path: Path) -> list[dict[str, str]]:
+    errors: list[dict[str, str]] = []
+    if not isinstance(document, dict):
+        return [{"code": "INVALID_ROOT", "path": str(path), "message": "Root must be a mapping."}]
+    objects = document.get("objects", [])
+    if not isinstance(objects, list):
+        return [{"code": "INVALID_OBJECTS", "path": str(path), "message": "objects must be a list."}]
+    for index, obj in enumerate(objects):
+        if not isinstance(obj, dict):
+            errors.append({"code": "INVALID_OBJECT", "path": str(path), "message": f"objects[{index}] must be a mapping."})
+            continue
+        missing = sorted(REQUIRED_OBJECT_FIELDS - set(obj))
+        if missing:
+            errors.append({"code": "MISSING_FIELDS", "path": str(path), "message": f"{obj.get('id', index)} missing: {', '.join(missing)}"})
+    return errors
+
+
+def validate_local_duplicate_ids(documents: dict[Path, Any]) -> list[dict[str, str]]:
+    errors: list[dict[str, str]] = []
+    collection_names = ["objects", "skills", "workflows", "templates", "patterns", "aliases", "adapters", "styles"]
     for path, document in documents.items():
         if not isinstance(document, dict):
             continue
-        objects = document.get("objects")
-        if not isinstance(objects, list):
-            continue
-        object_ids = [obj.get("id") for obj in objects if isinstance(obj, dict) and isinstance(obj.get("id"), str)]
-        for identifier, count in Counter(object_ids).items():
-            if count > 1:
-                errors.append({
-                    "code": "DUPLICATE_ID",
-                    "path": str(path),
-                    "message": f"Duplicate identifier inside registry: {identifier}",
-                })
+        for collection in collection_names:
+            items = document.get(collection)
+            if not isinstance(items, list):
+                continue
+            identifiers = [item.get("id") for item in items if isinstance(item, dict) and isinstance(item.get("id"), str)]
+            for identifier, count in Counter(identifiers).items():
+                if count > 1:
+                    errors.append({"code": "DUPLICATE_ID", "path": str(path), "message": f"Duplicate identifier inside {collection}: {identifier}"})
     return errors
 
 
@@ -92,41 +127,40 @@ def collect_dependencies(documents: dict[Path, Any]) -> list[tuple[str, Path]]:
     return dependencies
 
 
-def validate_object_registry(document: Any, path: Path) -> list[dict[str, str]]:
-    errors: list[dict[str, str]] = []
-    if not isinstance(document, dict):
-        return [{"code": "INVALID_ROOT", "path": str(path), "message": "Root must be a mapping."}]
-    objects = document.get("objects", [])
-    if not isinstance(objects, list):
-        return [{"code": "INVALID_OBJECTS", "path": str(path), "message": "objects must be a list."}]
-    for index, obj in enumerate(objects):
-        if not isinstance(obj, dict):
-            errors.append({"code": "INVALID_OBJECT", "path": str(path), "message": f"objects[{index}] must be a mapping."})
+def validate_alias_references(documents: dict[Path, Any]) -> list[dict[str, str]]:
+    warnings: list[dict[str, str]] = []
+    alias_path = Path("aios/registries/model-alias-registry.yaml")
+    adapter_path = Path("aios/registries/runtime-adapter-registry.yaml")
+    alias_doc = documents.get(alias_path, {})
+    adapter_doc = documents.get(adapter_path, {})
+    aliases = {item.get("alias") for item in alias_doc.get("aliases", []) if isinstance(item, dict)}
+
+    for item in alias_doc.get("aliases", []):
+        if not isinstance(item, dict):
             continue
-        missing = sorted(REQUIRED_OBJECT_FIELDS - set(obj))
-        if missing:
-            errors.append({
-                "code": "MISSING_FIELDS",
-                "path": str(path),
-                "message": f"{obj.get('id', index)} missing: {', '.join(missing)}",
-            })
-    return errors
+        for fallback in item.get("fallback_aliases", []):
+            if fallback not in aliases:
+                warnings.append({"code": "UNKNOWN_FALLBACK_ALIAS", "path": str(alias_path), "message": f"Unknown fallback alias: {fallback}"})
+
+    for adapter in adapter_doc.get("adapters", []):
+        if not isinstance(adapter, dict):
+            continue
+        for alias in adapter.get("supported_aliases", []):
+            if alias not in aliases:
+                warnings.append({"code": "UNKNOWN_SUPPORTED_ALIAS", "path": str(adapter_path), "message": f"Unknown supported alias: {alias}"})
+    return warnings
 
 
 def validate_source_paths(documents: dict[Path, Any], repo_root: Path) -> list[dict[str, str]]:
     warnings: list[dict[str, str]] = []
     for path, document in documents.items():
         for item in walk(document):
-            for key in ("location", "source_path"):
+            for key in ("location", "source_path", "path"):
                 value = item.get(key)
                 if not isinstance(value, str) or not value or value.startswith(("http://", "https://")):
                     continue
-                if not (repo_root / value).exists():
-                    warnings.append({
-                        "code": "MISSING_SOURCE_PATH",
-                        "path": str(path),
-                        "message": f"{key} does not exist: {value}",
-                    })
+                if value.startswith("aios/") and not (repo_root / value).exists():
+                    warnings.append({"code": "MISSING_SOURCE_PATH", "path": str(path), "message": f"{key} does not exist: {value}"})
     return warnings
 
 
@@ -151,22 +185,22 @@ def validate(repo_root: Path) -> dict[str, Any]:
     if object_path in documents:
         errors.extend(validate_object_registry(documents[object_path], object_path))
 
+    for path, document in documents.items():
+        errors.extend(validate_collection_required_fields(document, path))
+
     errors.extend(validate_local_duplicate_ids(documents))
     identifiers, _ = collect_ids(documents)
     known_ids = set(identifiers)
 
     for dependency, path in collect_dependencies(documents):
         if dependency and dependency not in known_ids:
-            warnings.append({
-                "code": "UNRESOLVED_DEPENDENCY",
-                "path": str(path),
-                "message": f"Dependency not registered: {dependency}",
-            })
+            warnings.append({"code": "UNRESOLVED_DEPENDENCY", "path": str(path), "message": f"Dependency not registered: {dependency}"})
 
+    warnings.extend(validate_alias_references(documents))
     warnings.extend(validate_source_paths(documents, repo_root))
 
     return {
-        "validator_version": "1.0.1",
+        "validator_version": "1.1.0",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "pass" if not errors else "fail",
         "summary": {
