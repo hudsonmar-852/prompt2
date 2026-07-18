@@ -1,0 +1,53 @@
+schema_version: "1.0"
+index:
+  id: INDEX-AIOS-001
+  name: AIOS Registry Index
+  version: "1.0.0"
+  status: active
+  updated_at: "2026-07-18"
+
+entries:
+  - key: objects
+    registry_id: REG-OBJECT-001
+    path: aios/registries/object-registry.yaml
+    entity_collection: objects
+  - key: skills
+    registry_id: REG-SKILL-001
+    path: aios/registries/skill-registry.yaml
+    entity_collection: skills
+  - key: workflows
+    registry_id: REG-WORKFLOW-001
+    path: aios/registries/workflow-registry.yaml
+    entity_collection: workflows
+  - key: templates
+    registry_id: REG-TEMPLATE-001
+    path: aios/registries/template-registry.yaml
+    entity_collection: templates
+  - key: prompt_patterns
+    registry_id: REG-PROMPT-PATTERN-001
+    path: aios/registries/prompt-pattern-registry.yaml
+    entity_collection: patterns
+  - key: model_aliases
+    registry_id: REG-MODEL-ALIAS-001
+    path: aios/registries/model-alias-registry.yaml
+    entity_collection: aliases
+  - key: runtime_adapters
+    registry_id: REG-RUNTIME-ADAPTER-001
+    path: aios/registries/runtime-adapter-registry.yaml
+    entity_collection: adapters
+  - key: image_styles
+    registry_id: REG-IMAGE-STYLE-001
+    path: aios/registries/image-style-registry.yaml
+    entity_collection: styles
+
+schemas:
+  image_spec:
+    id: SCHEMA-IMAGE-SPEC-001
+    path: aios/schemas/image-spec-schema.yaml
+
+resolution_rules:
+  source_of_truth: github_main
+  registry_paths_must_exist: true
+  entity_ids_must_be_unique_within_collection: true
+  workflows_resolve_skills_before_execution: true
+  runtime_selection_resolves_model_alias_then_adapter: true
